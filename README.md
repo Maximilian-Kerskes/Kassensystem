@@ -1,4 +1,4 @@
-# Kniffel 
+# Kassensystem 
 
 ## Quickstart
 ```bash

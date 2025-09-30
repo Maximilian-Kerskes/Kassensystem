@@ -1,4 +1,4 @@
-package main.java.com.datenspeicherung.db;
+package main.java.com.kassensystem.datenspeicherung.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

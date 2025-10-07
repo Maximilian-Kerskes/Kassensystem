@@ -8,7 +8,7 @@
 	<name>Kassensystem</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.release>17</maven.compiler.release>
+		<maven.compiler.release>21</maven.compiler.release>
 		<junit.jupiter.version>5.10.0</junit.jupiter.version>
 	</properties>
 
@@ -47,6 +47,7 @@
 		</dependency>
 	</dependencies>
 
+
 	<build>
 		<plugins>
 			<!-- Exec plugin for running your main class -->
@@ -68,7 +69,14 @@
 					<useModulePath>false</useModulePath>
 				</configuration>
 			</plugin>
+			<plugin>
+  				<groupId>org.apache.maven.plugins</groupId>
+  				<artifactId>maven-compiler-plugin</artifactId>
+  				<version>3.10.1</version> <!-- Use latest stable -->
+  				<configuration>
+    					<release>21</release>
+  				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
-

@@ -1,9 +1,9 @@
-package test.java.com.kassenssystem.steuerung;
+package com.kassenssystem.steuerung;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import main.java.com.kassensystem.steuerung.Steuerung;
+import com.kassensystem.steuerung.Steuerung;
 
 
 public class SteuerungTest{

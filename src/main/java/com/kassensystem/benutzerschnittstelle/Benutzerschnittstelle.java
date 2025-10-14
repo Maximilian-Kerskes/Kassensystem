@@ -1,1 +1,1 @@
-package main.java.com.kassensystem.benutzerschnittstelle;
+package com.kassensystem.benutzerschnittstelle;

@@ -1,11 +1,11 @@
-package test.java.com.kassenssystem.datenspeicherung.db;
+package com.kassenssystem.datenspeicherung.db;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import main.java.com.kassensystem.datenspeicherung.db.Datenbank;
+import com.kassensystem.datenspeicherung.db.Datenbank;
 
 public class DatenbankTest {
 	private Datenbank dieDatenbank;

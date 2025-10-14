@@ -1,4 +1,4 @@
-package main.java.com.kassensystem.fachkonzept;
+package com.kassensystem.fachkonzept;
 
 import com.fazecast.jSerialComm.*;
 import java.io.IOException;

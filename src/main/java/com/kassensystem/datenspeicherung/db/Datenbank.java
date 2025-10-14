@@ -15,7 +15,7 @@ public class Datenbank implements AutoCloseable {
 	private PreparedStatement stmt;
 	private ResultSet rs;
 
-	public Datenbank() throws Exception {
+	public Datenbank() throws SQLException {
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/kassensystem", "root", null);
 		} catch (Exception e) {
@@ -25,7 +25,7 @@ public class Datenbank implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() throws SQLException {
 		try {
 			if (con != null && !con.isClosed()) {
 				con.close();
@@ -36,24 +36,36 @@ public class Datenbank implements AutoCloseable {
 		}
 	}
 
-	public Produkt fetchProdukt(int produktNummer) {
+	public Produkt fetchProdukt(int produktNummer) throws SQLException {
 		String sqlStmt = "SELECT * ";
 		sqlStmt += "FROM produkt ";
 		sqlStmt += "WHERE produktnr = (?)";
-		try {
-			stmt = con.prepareStatement(sqlStmt);
+		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
 			stmt.setInt(1, produktNummer);
-			rs = stmt.executeQuery();
-			if (rs.next()) {
-				return new Produkt(rs.getInt(1), rs.getString(2), rs.getInt(3));
-			} else {
-				return null;
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					return new Produkt(rs.getInt(1), rs.getString(2), rs.getInt(3),
+							rs.getDouble(4));
+				} else {
+					return null;
+				}
 			}
+		} catch (SQLException e) {
+			throw new SQLException("Fehler beim Laden des Produkts: " + e.getMessage(), e);
+		}
+	}
 
-		} catch (Exception e) {
-			System.out.println("Fehler beim fetchen des Produkts: " + System.lineSeparator()
-					+ e.getLocalizedMessage());
-			return null;
+	public void setBestand(Produkt produkt, double neuerBestand) throws SQLException {
+		String sqlStmt = "UPDATE produkt ";
+		sqlStmt += "SET bestand = ? ";
+		sqlStmt += "WHERE produktnr = ? ";
+
+		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
+			stmt.setDouble(1, neuerBestand);
+			stmt.setInt(2, produkt.getProduktNummer());
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new SQLException("Fehler beim setzen des Bestands: " + e.getMessage(), e);
 		}
 	}
 

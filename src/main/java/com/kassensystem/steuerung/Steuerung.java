@@ -20,8 +20,13 @@ public class Steuerung {
 	// TODO
 	// migrate to actual GUI accurate tests
 	public int rueckGeldEvent(int produktNummer, int bezahlterBetrag) {
-		Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
-		return rueckgeldBerechnen(bezahlterBetrag, dasProdukt.getVerkaufspreis());
+		try {
+			Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
+			return rueckgeldBerechnen(bezahlterBetrag, dasProdukt.getVerkaufspreis());
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return 0;
+		}
 	}
 
 	private int rueckgeldBerechnen(int bezahlterBetrag, int verkaufspreis) {

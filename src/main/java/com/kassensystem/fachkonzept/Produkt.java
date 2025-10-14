@@ -4,11 +4,13 @@ public class Produkt {
 	private int produktNummer;
 	private String bezeichnung;
 	private int verkaufspreis;
+	private double bestand;
 
-	public Produkt(int produktNummer, String bezeichnung, int verkaufspreis) {
+	public Produkt(int produktNummer, String bezeichnung, int verkaufspreis, double bestand) {
 		this.produktNummer = produktNummer;
 		this.bezeichnung = bezeichnung;
 		this.verkaufspreis = verkaufspreis;
+		this.bestand = bestand;
 	}
 
 	public int getProduktNummer() {
@@ -21,5 +23,9 @@ public class Produkt {
 
 	public int getVerkaufspreis() {
 		return verkaufspreis;
+	}
+
+	public double getBestand() {
+		return bestand;
 	}
 }

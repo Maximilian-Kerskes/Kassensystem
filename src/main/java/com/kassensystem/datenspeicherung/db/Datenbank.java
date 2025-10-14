@@ -1,4 +1,4 @@
-package main.java.com.kassensystem.datenspeicherung.db;
+package com.kassensystem.datenspeicherung.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import main.java.com.kassensystem.fachkonzept.Produkt;
+import com.kassensystem.fachkonzept.Produkt;
 
 // TODO
 // consider refactoring into try-with-resources? 

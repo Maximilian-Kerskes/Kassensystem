@@ -1,9 +1,9 @@
-package test.java.com.kassenssystem.fachkonzept;
+package com.kassenssystem.fachkonzept;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import main.java.com.kassensystem.fachkonzept.Produkt;
+import com.kassensystem.fachkonzept.Produkt;
 
 public class ProduktTest {
 	@Test

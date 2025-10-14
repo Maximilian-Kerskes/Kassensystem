@@ -1,4 +1,4 @@
-package main.java.com.kassensystem.fachkonzept;
+package com.kassensystem.fachkonzept;
 
 public class Produkt {
 	private int produktNummer;

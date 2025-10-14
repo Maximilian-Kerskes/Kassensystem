@@ -1,9 +1,9 @@
-package test.java.com.kassenssystem.fachkonzept;
+package com.kassenssystem.fachkonzept;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import main.java.com.kassensystem.fachkonzept.Kasse;
+import com.kassensystem.fachkonzept.Kasse;
 
 public class KasseTest {
 	@Test

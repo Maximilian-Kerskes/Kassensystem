@@ -1,9 +1,9 @@
-package main.java.com.kassensystem.steuerung;
+package com.kassensystem.steuerung;
 
 import java.sql.SQLException;
 
-import main.java.com.kassensystem.datenspeicherung.db.Datenbank;
-import main.java.com.kassensystem.fachkonzept.Produkt;
+import com.kassensystem.datenspeicherung.db.Datenbank;
+import com.kassensystem.fachkonzept.Produkt;
 
 public class Steuerung {
 	private Datenbank dieDatenbank;

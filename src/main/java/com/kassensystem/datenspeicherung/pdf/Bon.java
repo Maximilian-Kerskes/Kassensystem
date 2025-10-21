@@ -1,4 +1,4 @@
-package com.kassensystem.fachkonzept;
+package com.kassensystem.datenspeicherung.pdf;
 
 import java.awt.print.PrinterException;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+
+import com.kassensystem.fachkonzept.Produkt;
 
 public class Bon {
 	private PDDocument document;

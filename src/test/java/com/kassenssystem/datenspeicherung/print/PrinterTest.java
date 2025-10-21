@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 
-import com.kassensystem.fachkonzept.Bon;
+import com.kassensystem.datenspeicherung.pdf.Bon;
 import com.kassensystem.fachkonzept.Produkt;
 import com.kassensystem.datenspeicherung.print.Printer;
 

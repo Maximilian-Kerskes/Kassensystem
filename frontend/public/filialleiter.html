@@ -1,72 +1,23 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filialleiter</title>
-</head>
-<body>
-    <h1>Filialleiter</h1>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Filialleiter</title>
+    </head>
+    <body>
+        <h1>Filialleiter</h1>
 
-    <button onclick="ladeTabelle('produkte')">Produkte</button>
-    <button onclick="ladeTabelle('einkaeufe')">Einkäufe</button>
+        <button onclick="ladeTabelle('produkte')">Produkte</button>
+        <button onclick="ladeTabelle('einkaeufe')">Einkäufe</button>
     
-    <table border="1" id="datenTable">
-        <thead>
-            <tr id="tableHeader"></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    
-    <script>
-        async function ladeTabelle(typ) {
-            const response = await fetch(`/${typ}`);
-            const daten = await response.json();
-    
-            const tbody = document.querySelector("#datenTable tbody");
-            const thead = document.querySelector("#tableHeader");
-    
-            tbody.innerHTML = "";
-            thead.innerHTML = "";
-    
-            if (typ === "produkte") {
-                thead.innerHTML = `
-                    <th>Produktnr</th>
-                    <th>Bezeichnung</th>
-                    <th>Verkaufspreis</th>
-                    <th>Bestand</th>
-                `;
-                daten.forEach(p => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${p.produktnr}</td>
-                        <td>${p.bezeichnung}</td>
-                        <td>${p.verkaufspreis}</td>
-                        <td>${p.bestand}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } else if (typ === "einkaeufe") {
-                thead.innerHTML = `
-                    <th>Einkaufnr</th>
-                    <th>Produktnr</th>
-                    <th>Menge</th>
-                    <th>Datum</th>
-                `;
-                daten.forEach(e => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${e.einkaufsnr}</td>
-                        <td>${e.produktnr}</td>
-                        <td>${e.anzahl}</td>
-                        <td>${e.timestamp}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-        }
-    
-        ladeTabelle("produkte");
-    </script>
-</body>
+        <table border="1" id="datenTable">
+            <thead>
+                <tr id="tableHeader"></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <script src="filialleiter.js"></script>
+    </body>
 </html>

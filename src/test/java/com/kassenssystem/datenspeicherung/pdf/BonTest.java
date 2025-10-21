@@ -1,11 +1,11 @@
-package com.kassenssystem.fachkonzept;
+package com.kassenssystem.datenspeicherung.pdf;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 
-import com.kassensystem.fachkonzept.Bon;
+import com.kassensystem.datenspeicherung.pdf.Bon;
 import com.kassensystem.fachkonzept.Produkt;
 
 public class BonTest {
@@ -26,3 +26,4 @@ public class BonTest {
 	}
 
 }
+

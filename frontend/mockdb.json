@@ -1,0 +1,42 @@
+{
+  "produkte": [
+    {
+      "produktnr": 1,
+      "bezeichnung": "Apfel",
+      "verkaufspreis": 0.5,
+      "bestand": 100
+    },
+    {
+      "produktnr": 3,
+      "bezeichnung": "Wurst",
+      "verkaufspreis": 1.5,
+      "bestand": 69
+    },
+    {
+      "produktnr": 4,
+      "bezeichnung": "Zucchini",
+      "verkaufspreis": 1.33,
+      "bestand": 17
+    }
+  ],
+  "einkaeufe": [
+    {
+      "einkaufsnr": 1,
+      "produktnr": 1,
+      "timestamp": "2025-10-21 08:00:00",
+      "anzahl": 20
+    },
+    {
+      "einkaufsnr": 2,
+      "produktnr": 2,
+      "timestamp": "2025-10-20 12:30:00",
+      "anzahl": 10
+    },
+    {
+      "einkaufsnr": 3,
+      "produktnr": 3,
+      "timestamp": "2025-10-19 15:45:00",
+      "anzahl": 15
+    }
+  ]
+}

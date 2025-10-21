@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import com.kassensystem.fachkonzept.Produkt;
 import com.kassensystem.steuerung.Steuerung;
 
+// TODO 
+// add global error handling controller
+
 @RestController
 public class Controller {
 	Steuerung dieSteuerung;

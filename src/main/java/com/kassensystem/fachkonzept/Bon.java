@@ -1,75 +1,104 @@
 package com.kassensystem.fachkonzept;
 
-import com.google.protobuf.TextFormat.Printer;
-import com.kassensystem.fachkonzept.Produkt;
-
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.io.IOError;
 import java.io.IOException;
-
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
-import org.apache.pdfbox.printing.PDFPageable;
 
 public class Bon {
-	private String printerName;
 	private PDDocument document;
 	private PDPage page;
 
 	public Bon() {
-		printerName = "Generic-CUPS-PDF-Printer";
 		document = new PDDocument();
 		page = new PDPage();
 		document.addPage(page);
 	}
 
-	public void printBon(Produkt[] produkte) throws PrinterException {
+	public PDDocument createBon(Produkt[] produkte) throws PrinterException {
 		try {
-			addText("hello world");
-			printDocument();
-
+			addProdukte(produkte);
+			return document;
 		} catch (PrinterException e) {
 			throw new PrinterException(e.getMessage());
 		}
 	}
 
-	private void addText(String text) throws PrinterException {
+	private void addProdukte(Produkt[] produkte) throws PrinterException {
 		try (PDPageContentStream stream = new PDPageContentStream(document, page)) {
+			addDatum(stream);
+			PDType1Font font = new PDType1Font(Standard14Fonts.FontName.COURIER);
+			int fontSize = 12;
+			float leading = 1.5f * fontSize;
+
+			float pageWidth = page.getMediaBox().getWidth();
+			float pageHeight = page.getMediaBox().getHeight();
+
+			// Sample line representing the widest possible row (adjust to your expected max
+			// length)
+			String sampleLine = String.format("%-6s %-20s %10s", "999999", "XXXXXXXXXXXXXXXXXXXX",
+					"99999.99€");
+
+			// Calculate width of this sample line in points
+			float textWidth = font.getStringWidth(sampleLine) / 1000 * fontSize;
+
+			// Center horizontally
+			float startX = (pageWidth - textWidth) / 2;
+			float startY = pageHeight - 70; // Leave some margin from the top (also below date)
+
 			stream.beginText();
-			stream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 15);
-			stream.showText(text);
+			stream.setFont(font, fontSize);
+			stream.setLeading(leading);
+			stream.newLineAtOffset(startX, startY);
+
+			// Table header
+			stream.showText(String.format("%-6s %-20s %10s", "Menge", "Produkt", "Preis"));
+			stream.newLine();
+			stream.showText("-".repeat(sampleLine.length())); // horizontal line
+			stream.newLine();
+
+			// Table rows
+			for (Produkt p : produkte) {
+				String line = String.format(
+						"%-6.0f %-20s %10.2f€",
+						p.getBestand(),
+						p.getBezeichnung(),
+						p.getVerkaufspreis());
+				stream.showText(line);
+				stream.newLine();
+			}
+
+			stream.showText("-".repeat(sampleLine.length()));
+			stream.newLine();
+
 			stream.endText();
 		} catch (IOException e) {
-			throw new PrinterException("Es kann nicht zur PDF geschrieben werden");
+			throw new PrinterException("Fehler beim Schreiben des Bons");
 		}
 	}
 
-	private void printDocument() throws PrinterException {
-		try {
-			PrinterJob job = PrinterJob.getPrinterJob();
-			PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
-			for (PrintService printer : printServices) {
-				if (printer.getName() == printerName) {
-					System.out.println("hello");
-					job.setPrintService(printer);
-				}
-			}
-			job.setPageable(new PDFPageable(document));
+	private void addDatum(PDPageContentStream stream) throws IOException {
+		PDType1Font font = new PDType1Font(Standard14Fonts.FontName.COURIER);
+		int fontSize = 12;
 
-			// Show the print dialog
-			if (job.printDialog()) {
-				job.print(); // Print the document
-			}
+		float pageWidth = page.getMediaBox().getWidth();
+		float topMargin = page.getMediaBox().getHeight() - 30;
 
-		} catch (PrinterException e) {
-			throw new PrinterException("");
-		}
+		String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
+		float textWidth = font.getStringWidth(currentDate) / 1000 * fontSize;
+		float startX = (pageWidth - textWidth) / 2;
+
+		stream.beginText();
+		stream.setFont(font, fontSize);
+		stream.newLineAtOffset(startX, topMargin);
+		stream.showText(currentDate);
+		stream.endText();
 	}
 }

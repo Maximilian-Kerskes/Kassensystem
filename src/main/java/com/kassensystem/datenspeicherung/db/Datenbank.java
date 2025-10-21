@@ -44,7 +44,7 @@ public class Datenbank implements AutoCloseable {
 			stmt.setInt(1, produktNummer);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
-					return new Produkt(rs.getInt(1), rs.getString(2), rs.getInt(3),
+					return new Produkt(rs.getInt(1), rs.getString(2), rs.getDouble(3),
 							rs.getDouble(4));
 				} else {
 					return null;

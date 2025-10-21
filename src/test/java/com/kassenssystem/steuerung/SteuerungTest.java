@@ -27,7 +27,7 @@ public class SteuerungTest {
 	public void rueckGeldEventTest() {
 		assertDoesNotThrow(() -> {
 			Steuerung dieSteuerung = new Steuerung();
-			int rueckGeld = dieSteuerung.rueckGeldEvent(1, 1);
+			double rueckGeld = dieSteuerung.rueckGeldEvent(1, 1);
 			assertEquals(14, rueckGeld);
 
 			rueckGeld = dieSteuerung.rueckGeldEvent(1, 5);

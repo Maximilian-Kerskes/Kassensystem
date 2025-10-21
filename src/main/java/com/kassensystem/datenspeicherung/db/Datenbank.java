@@ -12,8 +12,6 @@ import com.kassensystem.fachkonzept.Produkt;
 // consider refactoring into try-with-resources? 
 public class Datenbank implements AutoCloseable {
 	private Connection con;
-	private PreparedStatement stmt;
-	private ResultSet rs;
 
 	public Datenbank() throws SQLException {
 		try {

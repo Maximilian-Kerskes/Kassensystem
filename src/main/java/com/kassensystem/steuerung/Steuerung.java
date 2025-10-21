@@ -19,7 +19,7 @@ public class Steuerung {
 
 	// TODO
 	// migrate to actual GUI accurate tests
-	public int rueckGeldEvent(int produktNummer, int bezahlterBetrag) {
+	public double rueckGeldEvent(int produktNummer, double bezahlterBetrag) {
 		try {
 			Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
 			return rueckgeldBerechnen(bezahlterBetrag, dasProdukt.getVerkaufspreis());
@@ -45,7 +45,7 @@ public class Steuerung {
 		}
 	}
 
-	private int rueckgeldBerechnen(int bezahlterBetrag, int verkaufspreis) {
+	private double rueckgeldBerechnen(double bezahlterBetrag, double verkaufspreis) {
 		return Math.abs(verkaufspreis - bezahlterBetrag);
 	}
 }

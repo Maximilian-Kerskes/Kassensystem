@@ -3,10 +3,10 @@ package com.kassensystem.fachkonzept;
 public class Produkt {
 	private int produktNummer;
 	private String bezeichnung;
-	private int verkaufspreis;
+	private double verkaufspreis;
 	private double bestand;
 
-	public Produkt(int produktNummer, String bezeichnung, int verkaufspreis, double bestand) {
+	public Produkt(int produktNummer, String bezeichnung, double verkaufspreis, double bestand) {
 		this.produktNummer = produktNummer;
 		this.bezeichnung = bezeichnung;
 		this.verkaufspreis = verkaufspreis;
@@ -21,11 +21,18 @@ public class Produkt {
 		return bezeichnung;
 	}
 
-	public int getVerkaufspreis() {
+	public double getVerkaufspreis() {
 		return verkaufspreis;
 	}
 
 	public double getBestand() {
 		return bestand;
+	}
+
+	public String getProduktAsString() {
+		String produkt = getBezeichnung();
+		produkt += " - " + getVerkaufspreis();
+		produkt += " - " + getBestand();
+		return produkt;
 	}
 }

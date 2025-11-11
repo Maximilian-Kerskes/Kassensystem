@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `einkaeufe` (
   `produktidprodukt` varchar(100) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `anzahl` int(11) DEFAULT NULL,
+  `bezahlt` BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (`einkaufsnummer`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

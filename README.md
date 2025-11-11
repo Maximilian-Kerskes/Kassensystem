@@ -2,5 +2,5 @@
 
 ## Quickstart
 ```bash
-mvn compile exec:java
+mvn spring-boot:run
 ```

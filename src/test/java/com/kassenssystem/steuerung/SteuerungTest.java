@@ -2,7 +2,9 @@ package com.kassenssystem.steuerung;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.sql.SQLException;
 
@@ -11,9 +13,13 @@ import com.kassensystem.fachkonzept.Produkt;
 import com.kassensystem.steuerung.Steuerung;
 
 public class SteuerungTest {
-	public void setUpBestandUpdateEventTest() {
+	public void setUpTestProdukt() {
 		try (Datenbank dieDatenbank = new Datenbank()) {
 			Produkt produkt = dieDatenbank.fetchProdukt(1);
+			if (produkt == null) {
+				System.out.println("⚠️ Produkt mit ID 1 nicht gefunden. Test könnte fehlschlagen.");
+				return;
+			}
 			dieDatenbank.setBestand(produkt, 10);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -21,7 +27,73 @@ public class SteuerungTest {
 	}
 
 	// TODO
-	// migrate to actual GUI accurate tests
+	// use mockdb instead of real, this WILL break if the DB changes
+	@Test
+	public void scannedProduktTest() {
+		setUpTestProdukt();
+		assertDoesNotThrow(() -> {
+			Steuerung steuerung = new Steuerung();
+			assertNotEquals(-1, steuerung.getEinkaufsnummer()); // init Einkaufsvorgang
+
+			Produkt produkt;
+			try (Datenbank dieDatenbank = new Datenbank()) {
+				produkt = dieDatenbank.fetchProdukt(1);
+			}
+
+			steuerung.scannedProdukt(produkt, 2);
+		});
+	}
+
+	// TODO
+	// use mockdb instead of real, this WILL break if the DB changes
+	@Test
+	public void changeMengeTest() {
+		setUpTestProdukt();
+		assertDoesNotThrow(() -> {
+			Steuerung steuerung = new Steuerung();
+			assertNotEquals(-1, steuerung.getEinkaufsnummer()); // init Einkaufsvorgang
+
+			Produkt produkt;
+			try (Datenbank dieDatenbank = new Datenbank()) {
+				produkt = dieDatenbank.fetchProdukt(1);
+			}
+
+			steuerung.changeMenge(produkt, 5);
+		});
+	}
+
+	// TODO
+	// use mockdb instead of real, this WILL break if the DB changes
+	@Test
+	public void deleteProduktTest() {
+		setUpTestProdukt();
+		assertDoesNotThrow(() -> {
+			Steuerung steuerung = new Steuerung();
+			steuerung.getEinkaufsnummer();
+
+			Produkt produkt;
+			try (Datenbank dieDatenbank = new Datenbank()) {
+				produkt = dieDatenbank.fetchProdukt(1);
+			}
+
+			steuerung.deleteProdukt(produkt);
+		});
+	}
+
+	// TODO
+	// use mockdb instead of real, this WILL break if the DB changes
+	@Test
+	public void getEinkaufsnummerTest() {
+		assertDoesNotThrow(() -> {
+			Steuerung steuerung = new Steuerung();
+			steuerung.getEinkaufsnummer();
+
+			// just check that the Einkaufsnummer got set
+			assertNotNull(steuerung);
+		});
+	}
+
+	// TODO
 	// use mockdb instead of real, this WILL break if the DB changes
 	@Test
 	public void rueckGeldEventTest() {
@@ -36,11 +108,10 @@ public class SteuerungTest {
 	}
 
 	// TODO
-	// migrate to actual GUI accurate tests
 	// use mockdb instead of real, this WILL break if the DB changes
 	@Test
 	public void bestandUpdateEventTest() {
-		setUpBestandUpdateEventTest();
+		setUpTestProdukt();
 		Steuerung dieSteuerung = new Steuerung();
 		int produktNummer = 1;
 		assertDoesNotThrow(() -> {

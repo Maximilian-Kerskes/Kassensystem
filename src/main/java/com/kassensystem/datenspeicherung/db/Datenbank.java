@@ -5,12 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-<<<<<<< HEAD
 import java.sql.Timestamp;
-=======
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> c3fce99 (WIP)
 
 import com.kassensystem.fachkonzept.Produkt;
 

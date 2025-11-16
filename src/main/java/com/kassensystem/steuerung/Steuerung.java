@@ -7,94 +7,15 @@ import com.kassensystem.datenspeicherung.db.Datenbank;
 import com.kassensystem.fachkonzept.Produkt;
 
 public class Steuerung {
-<<<<<<< HEAD
-	private Datenbank dieDatenbank;
-	private int einkaufsnummer;
-=======
     private Datenbank dieDatenbank;
->>>>>>> c3fce99 (WIP)
+    private int einkaufsnummer;
 
     public Steuerung() {
         try {
             dieDatenbank = new Datenbank();
         } catch (Exception e) {
-            System.out.println("Fehler beim Initialisieren der Datenbank: " + System.lineSeparator()
-                    + e.getLocalizedMessage());
-        }
-    }
-
-<<<<<<< HEAD
-	public void bestandUpdateEvent(int produktNummer) {
-		try {
-			Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
-			double bestand = dasProdukt.getBestand();
-			if (bestand <= 0) {
-				dieDatenbank.setBestand(dasProdukt, 0);
-				return;
-			}
-			dieDatenbank.setBestand(dasProdukt, bestand - 1);
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-
-	// TODO
-	// migrate to actual GUI accurate tests
-	public double rueckGeldEvent(int produktNummer, double bezahlterBetrag) {
-		try {
-			Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
-			return rueckgeldBerechnen(bezahlterBetrag, dasProdukt.getVerkaufspreis());
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			return 0;
-		}
-	}
-
-	private double rueckgeldBerechnen(double bezahlterBetrag, double verkaufspreis) {
-		return Math.abs(verkaufspreis - bezahlterBetrag);
-	}
-
-	public void scannedProdukt(Produkt pProdukt, int pAnzahl) {
-		try {
-			dieDatenbank.addProdukt(pProdukt, pAnzahl, einkaufsnummer);
-		} catch (SQLException e) {
-			System.out.println(e.getLocalizedMessage());
-		}
-	}
-
-	public void changeMenge(Produkt pProdukt, int pMenge) {
-		try {
-			dieDatenbank.changePosition(pProdukt, pMenge, einkaufsnummer);
-		} catch (SQLException e) {
-			System.out.println(e.getLocalizedMessage());
-		}
-	}
-
-	public void deleteProdukt(Produkt pProdukt) {
-		try {
-			dieDatenbank.deletePosition(pProdukt, einkaufsnummer);
-		} catch (SQLException e) {
-			System.out.println(e.getLocalizedMessage());
-		}
-	}
-
-	public int getEinkaufsnummer() {
-		try {
-			return dieDatenbank.fetchEinkaufsNummer();
-		} catch (SQLException e) {
-			System.out.println(e.getLocalizedMessage());
-			return -1;
-		}
-	}
-
-=======
-    public double rueckGeldEvent(int produktNummer, double bezahlterBetrag) {
-        try {
-            Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
-            return rueckgeldBerechnen(bezahlterBetrag, dasProdukt.getVerkaufspreis());
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return 0;
+            System.out.println("Fehler beim Initialisieren der Datenbank: "
+                    + System.lineSeparator() + e.getLocalizedMessage());
         }
     }
 
@@ -109,6 +30,53 @@ public class Steuerung {
             dieDatenbank.setBestand(dasProdukt, bestand - 1);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public double rueckGeldEvent(int produktNummer, double bezahlterBetrag) {
+        try {
+            Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
+            return rueckgeldBerechnen(bezahlterBetrag, dasProdukt.getVerkaufspreis());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
+
+    private double rueckgeldBerechnen(double bezahlterBetrag, double verkaufspreis) {
+        return Math.abs(verkaufspreis - bezahlterBetrag);
+    }
+
+    public void scannedProdukt(Produkt pProdukt, int pAnzahl) {
+        try {
+            dieDatenbank.addProdukt(pProdukt, pAnzahl, einkaufsnummer);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+    public void changeMenge(Produkt pProdukt, int pMenge) {
+        try {
+            dieDatenbank.changePosition(pProdukt, pMenge, einkaufsnummer);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+    public void deleteProdukt(Produkt pProdukt) {
+        try {
+            dieDatenbank.deletePosition(pProdukt, einkaufsnummer);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+    public int getEinkaufsnummer() {
+        try {
+            return dieDatenbank.fetchEinkaufsNummer();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+            return -1;
         }
     }
 
@@ -163,9 +131,4 @@ public class Steuerung {
             System.out.println("Fehler beim Löschen des Produkts: " + e.getMessage());
         }
     }
-
-    private double rueckgeldBerechnen(double bezahlterBetrag, double verkaufspreis) {
-        return Math.abs(verkaufspreis - bezahlterBetrag);
-    }
->>>>>>> c3fce99 (WIP)
 }

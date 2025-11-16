@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.kassensystem.fachkonzept.Produkt;
+import com.kassensystem.fachkonzept.Position;
 import com.kassensystem.steuerung.Steuerung;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -30,8 +31,9 @@ public class Controller {
 	}
 
 	@GetMapping("/einkaeufe")
-	public ResponseEntity<Integer> getAllEinkauefe() {
-		return ResponseEntity.ok(2);
+	public ResponseEntity<List<Position>> getAllEinkauefe() {
+		List<Position> einkaeufe = dieSteuerung.getEinkaeufe(); 
+		return ResponseEntity.ok(einkaeufe);
 	}
 
 	@PostMapping("/produkte")

@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kassensystem.fachkonzept.Position;
 import com.kassensystem.fachkonzept.Produkt;
 
 // consider refactoring into try-with-resources? 
@@ -103,30 +104,29 @@ public class Datenbank implements AutoCloseable {
 	}
 	
 	
-	/*To-Do wenn Bitzi mal fertig wird mit seinen Scheiß Einkäufen oder Postionen was auch immer
-	public List<Einkaeufe> fetchEinkaeufe() throws SQLException {
-	    String sqlStmt = "SELECT * FROM einkauf";
+	public List<Position> fetchEinkaeufe() throws SQLException {
+		String sqlStmt = "SELECT * FROM einkaeufe";
 
-	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt);
-	         ResultSet rs = stmt.executeQuery()) {
+		try (PreparedStatement stmt = con.prepareStatement(sqlStmt);
+			ResultSet rs = stmt.executeQuery()) {
 
-	        List<einkaeufe> einkaeufe = new ArrayList<>();
+			List<Position> einkaeufe = new ArrayList<>();
 
-	        while (rs.next()) {
-	            produkte.add(new Einkauf( //Füg dann hier den richtigen Scheiß ein
-	                    rs.getInt(1),
-	                    rs.getString(2),
-	                    rs.getDouble(3),
-	                    rs.getDouble(4)
-	            ));
-	        }
+			while (rs.next()) {
+				einkaeufe.add(new Position( 
+					rs.getInt(1), 
+					rs.getInt(2),        
+					rs.getTimestamp(3),  
+					rs.getInt(4)         
+				));
+			}
 
-	        return einkaeufe;
-	    } catch (SQLException e) {
-	        throw new SQLException("Fehler beim Laden der Einkäufe: " + e.getMessage(), e);
-	    }
+			return einkaeufe;
+		} catch (SQLException e) {
+			throw new SQLException("Fehler beim Laden der Einkäufe: " + e.getMessage(), e);
+		}
 	}
-	*/
+
 	
 	public void deleteProdukt(int produktNummer) throws SQLException {
 	    String sqlStmt = "DELETE FROM produkt WHERE produktnr = ?";

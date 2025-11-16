@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.kassensystem.datenspeicherung.db.Datenbank;
 import com.kassensystem.fachkonzept.Produkt;
+import com.kassensystem.fachkonzept.Position;
 
 public class Steuerung {
     private Datenbank dieDatenbank;
@@ -89,6 +90,15 @@ public class Steuerung {
         return null;
     }
 
+    public List<Position> getEinkaeufe() {
+        try {
+            return dieDatenbank.fetchEinkaeufe();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     public Produkt getProdukt(int produktnr) {
         try {
             return dieDatenbank.fetchProdukt(produktnr);
@@ -131,4 +141,5 @@ public class Steuerung {
             System.out.println("Fehler beim Löschen des Produkts: " + e.getMessage());
         }
     }
+
 }

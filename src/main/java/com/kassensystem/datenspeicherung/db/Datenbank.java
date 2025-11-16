@@ -5,7 +5,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+<<<<<<< HEAD
 import java.sql.Timestamp;
+=======
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> c3fce99 (WIP)
 
 import com.kassensystem.fachkonzept.Produkt;
 
@@ -76,6 +81,100 @@ public class Datenbank implements AutoCloseable {
 			throw new SQLException("Fehler beim Laden des Produkts: " + e.getMessage(), e);
 		}
 	}
+	
+	public List<Produkt> fetchProdukte() throws SQLException {
+	    String sqlStmt = "SELECT * FROM produkt";
+
+	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt);
+	         ResultSet rs = stmt.executeQuery()) {
+
+	        List<Produkt> produkte = new ArrayList<>();
+
+	        while (rs.next()) {
+	            produkte.add(new Produkt(
+	                    rs.getInt(1),
+	                    rs.getString(2),
+	                    rs.getDouble(3),
+	                    rs.getDouble(4)
+	            ));
+	        }
+
+	        return produkte;
+	    } catch (SQLException e) {
+	        throw new SQLException("Fehler beim Laden der Produkte: " + e.getMessage(), e);
+	    }
+	}
+	
+	
+	/*To-Do wenn Bitzi mal fertig wird mit seinen Scheiß Einkäufen oder Postionen was auch immer
+	public List<Einkaeufe> fetchEinkaeufe() throws SQLException {
+	    String sqlStmt = "SELECT * FROM einkauf";
+
+	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt);
+	         ResultSet rs = stmt.executeQuery()) {
+
+	        List<einkaeufe> einkaeufe = new ArrayList<>();
+
+	        while (rs.next()) {
+	            produkte.add(new Einkauf( //Füg dann hier den richtigen Scheiß ein
+	                    rs.getInt(1),
+	                    rs.getString(2),
+	                    rs.getDouble(3),
+	                    rs.getDouble(4)
+	            ));
+	        }
+
+	        return einkaeufe;
+	    } catch (SQLException e) {
+	        throw new SQLException("Fehler beim Laden der Einkäufe: " + e.getMessage(), e);
+	    }
+	}
+	*/
+	
+	public void deleteProdukt(int produktNummer) throws SQLException {
+	    String sqlStmt = "DELETE FROM produkt WHERE produktnr = ?";
+	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
+	        stmt.setInt(1, produktNummer);
+	        int rowsAffected = stmt.executeUpdate();
+	        if (rowsAffected == 0) {
+	            throw new SQLException("Kein Produkt mit der Nummer " + produktNummer + " gefunden.");
+	        }
+	    } catch (SQLException e) {
+	        throw new SQLException("Fehler beim Löschen des Produkts: " + e.getMessage(), e);
+	    }
+	}
+	
+	public void updateProdukt(int produktNummer, String bezeichnung, double verkaufspreis, double bestand) throws SQLException {
+	    String sqlStmt = "UPDATE produkt SET bezeichnung = ?, verkaufspreis = ?, bestand = ? WHERE produktnr = ?";
+	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
+	        stmt.setString(1, bezeichnung);
+	        stmt.setDouble(2, verkaufspreis);
+	        stmt.setDouble(3, bestand );
+	        stmt.setInt(4, produktNummer);
+
+	        int rowsAffected = stmt.executeUpdate();
+	        if (rowsAffected == 0) {
+	            throw new SQLException("Kein Produkt mit der Nummer " + produktNummer + " gefunden.");
+	        }
+	    } catch (SQLException e) {
+	        throw new SQLException("Fehler beim Aktualisieren des Produkts: " + e.getMessage(), e);
+	    }
+	}
+	
+	public void createProdukt(int produktNummer, String bezeichnung, double verkaufspreis, double bestand) throws SQLException {
+	    String sqlStmt = "INSERT INTO produkt (produktnr, bezeichnung, verkaufspreis, bestand) VALUES (?, ?, ?, ?)";
+	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
+	        stmt.setInt(1, produktNummer);
+	        stmt.setString(2, bezeichnung);
+	        stmt.setDouble(3, verkaufspreis);
+	        stmt.setDouble(4, bestand);
+
+	        stmt.executeUpdate();
+	    } catch (SQLException e) {
+	        throw new SQLException("Fehler beim Erstellen des Produkts: " + e.getMessage(), e);
+	    }
+	}
+
 
 	public void setBestand(Produkt produkt, double neuerBestand) throws SQLException {
 		String sqlStmt = "UPDATE produkt ";

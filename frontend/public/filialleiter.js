@@ -1,5 +1,7 @@
+const API_BASE_URL = "http://localhost:8080";
+
 async function ladeTabelle(typ) {
-    const response = await fetch(`/${typ}`);
+    const response = await fetch(`${API_BASE_URL}/${typ}`);
     const daten = await response.json();
 
     const tbody = document.querySelector("#datenTable tbody");
@@ -17,30 +19,29 @@ async function ladeTabelle(typ) {
             <th>Aktion</th>
         `;
         daten.forEach(p => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${p.produktnr}</td>
-            <td contenteditable="true">${p.bezeichnung}</td>
-            <td contenteditable="true">${p.verkaufspreis}</td>
-            <td contenteditable="true">${p.bestand}</td>
-            <td>
-                <button onclick="speichereProdukt(this)">Speichern</button>
-                <button onclick="loescheProdukt(${p.produktnr})">Löschen</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${p.produktnr}</td>
+                <td contenteditable="true">${p.bezeichnung}</td>
+                <td contenteditable="true">${p.verkaufspreis}</td>
+                <td contenteditable="true">${p.bestand}</td>
+                <td>
+                    <button onclick="speichereProdukt(this)">Speichern</button>
+                    <button onclick="loescheProdukt(${p.produktnr})">Löschen</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
 
-    // Leere Zeile für neues Produkt
-    const trNeu = document.createElement("tr");
-    trNeu.innerHTML = `
-        <td>neu</td>
-        <td contenteditable="true"></td>
-        <td contenteditable="true"></td>
-        <td contenteditable="true"></td>
-        <td><button onclick="erstelleProdukt(this)">Hinzufügen</button></td>
-    `;
-    tbody.appendChild(trNeu);
+        const trNeu = document.createElement("tr");
+        trNeu.innerHTML = `
+            <td>neu</td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td><button onclick="erstelleProdukt(this)">Hinzufügen</button></td>
+        `;
+        tbody.appendChild(trNeu);
 
     } else if (typ === "einkaeufe") {
         thead.innerHTML = `
@@ -70,7 +71,7 @@ async function speichereProdukt(button) {
     const bestand = tr.children[3].textContent;
 
     try {
-        const response = await fetch("/produkte", {
+        const response = await fetch(`${API_BASE_URL}/produkte`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ produktnr, bezeichnung, verkaufspreis, bestand })
@@ -93,7 +94,7 @@ async function erstelleProdukt(button) {
     const bestand = tr.children[3].textContent;
 
     try {
-        const response = await fetch("/produkte", {
+        const response = await fetch(`${API_BASE_URL}/produkte`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ bezeichnung, verkaufspreis, bestand })
@@ -114,7 +115,7 @@ async function loescheProdukt(produktnr) {
     if (!confirm("Produkt wirklich löschen?")) return;
 
     try {
-        const response = await fetch(`/produkte/${produktnr}`, { method: "DELETE" });
+        const response = await fetch(`${API_BASE_URL}/produkte/${produktnr}`, { method: "DELETE" });
         if (response.ok) {
             alert("Produkt gelöscht!");
             ladeTabelle("produkte");

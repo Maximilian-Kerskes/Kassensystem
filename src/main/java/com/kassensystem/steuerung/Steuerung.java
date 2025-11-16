@@ -1,6 +1,7 @@
 package com.kassensystem.steuerung;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.kassensystem.datenspeicherung.db.Datenbank;
@@ -48,9 +49,13 @@ public class Steuerung {
         return Math.abs(verkaufspreis - bezahlterBetrag);
     }
 
-    public void scannedProdukt(Produkt pProdukt, int pAnzahl) {
+    public void scannedProdukt(Produkt pProdukt) {
         try {
-            dieDatenbank.addProdukt(pProdukt, pAnzahl, einkaufsnummer);
+            dieDatenbank.createProdukt(
+                pProdukt.getProduktNummer(), 
+                pProdukt.getBezeichnung(), 
+                pProdukt.getVerkaufspreis(), 
+                pProdukt.getBestand());
         } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
@@ -142,4 +147,27 @@ public class Steuerung {
         }
     }
 
+    public void createPosition(Position position) {
+        try {
+            dieDatenbank.createPosition(
+                position.getEinkaufsnummer(), 
+                position.getProduktnummer(), 
+                position.getMenge(), 
+                position.getZeitpunkt()
+            );
+        } catch (SQLException e) {
+            System.out.println("Fehler beim Erstellen der Position: " + e.getMessage());
+        }
+    }
+
+    public int naechsteEinkaufsnummer() {
+        int naechsteEinkaufsnummer;
+        try {
+            naechsteEinkaufsnummer = dieDatenbank.fetchEinkaufsNummer() + 1;
+            return naechsteEinkaufsnummer;
+        } catch (SQLException e) {
+             System.out.println("Fehler beim erstellen der nächsten Einkaufsnummer: " + e.getMessage());
+        }
+        return -1;   
+    }
 }

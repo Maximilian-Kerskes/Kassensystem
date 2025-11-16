@@ -64,4 +64,19 @@ public class Controller {
         List<Position> einkaeufe = dieSteuerung.getEinkaeufe();
         return ResponseEntity.ok(einkaeufe);
     }
+
+	@PostMapping("/positionen")
+	public ResponseEntity<String> createPosition(@RequestBody Position position) {
+		if (position.getMenge() <= 0 || position.getZeitpunkt() == null) {
+			return ResponseEntity.badRequest().body("Ungültige Positionsdaten");
+		}
+		dieSteuerung.createPosition(position);
+		return ResponseEntity.ok("Position erstellt");
+	}
+
+	@GetMapping("/einkaeufe/naechste-einkaufsnr")
+	public ResponseEntity<Integer> getNaechsteEinkaufsnummer() {
+		int naechsteNr = dieSteuerung.naechsteEinkaufsnummer();
+		return ResponseEntity.ok(naechsteNr);
+	}
 }

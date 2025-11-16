@@ -37,30 +37,6 @@ public class Datenbank implements AutoCloseable {
 		}
 	}
 
-	public void addProdukt(Produkt pProdukt, int pAnzahl, int pEinkaufsnummer) throws SQLException {
-		int einkaufsnummer = pEinkaufsnummer;
-		Produkt dasProdukt = pProdukt;
-		int produktID = dasProdukt.getProduktNummer();
-		int anzahl = pAnzahl;
-		Timestamp zeitpunkt = new Timestamp(System.currentTimeMillis());
-
-		String insert = "INSERT INTO einkaeufe";
-		insert += "(einkausnummer, produktid, timestamp, anzahl)";
-		insert += "VALUES";
-		insert += "(?, ?, ?, ?)";
-
-		try (PreparedStatement stmt = con.prepareStatement(insert)) {
-			stmt.setInt(1, einkaufsnummer);
-			stmt.setInt(2, produktID);
-			stmt.setTimestamp(3, zeitpunkt);
-			stmt.setInt(4, anzahl);
-
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new SQLException("Fehler beim Speichern der Position: " + e.getMessage(), e);
-		}
-	}
-
 	public Produkt fetchProdukt(int produktNummer) throws SQLException {
 		String sqlStmt = "SELECT * ";
 		sqlStmt += "FROM produkt ";
@@ -197,8 +173,8 @@ public class Datenbank implements AutoCloseable {
 
 		String update = "UPDATE einkaeufe ";
 		update += "SET menge = ? ";
-		update += "WHERE produktID = ?";
-		update += "AND einkaufsnummer = ?";
+		update += "WHERE produktnr = ?";
+		update += "AND einkaufsnr = ?";
 
 		try (PreparedStatement stmt = con.prepareStatement(update)) {
 			stmt.setInt(1, menge);
@@ -218,7 +194,7 @@ public class Datenbank implements AutoCloseable {
 		String delete = "DELETE FROM";
 		delete += "einkaeufe";
 		delete += "WHERE";
-		delete += "produktid = ?";
+		delete += "produktnr = ?";
 
 		try (PreparedStatement stmt = con.prepareStatement(delete)) {
 			stmt.setInt(1, produktID);
@@ -226,6 +202,21 @@ public class Datenbank implements AutoCloseable {
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new SQLException("Fehler beim Loeschen der Position: " + e.getMessage(), e);
+		}
+	}
+
+	public void createPosition(int einkaufsnummer, int produktnr, int anzahl, Timestamp zeitpunkt) throws SQLException {
+		String insert = "INSERT INTO einkaeufe (einkaufsnr, produktnr, timestamp, anzahl) VALUES (?, ?, ?, ?)";
+
+		try (PreparedStatement stmt = con.prepareStatement(insert)) {
+			stmt.setInt(1, einkaufsnummer);
+			stmt.setInt(2, produktnr);
+			stmt.setTimestamp(3, zeitpunkt);
+			stmt.setInt(4, anzahl);
+
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new SQLException("Fehler beim Erstellen der Position: " + e.getMessage(), e);
 		}
 	}
 
@@ -245,25 +236,22 @@ public class Datenbank implements AutoCloseable {
 	}
 
 	public int fetchEinkaufsNummer() throws SQLException {
-		String select = "SELECT max(einkaufsnummer), bezahlt ";
-		select += "FROM einkaeufe ";
+		String select = "SELECT MAX(einkaufsnr) FROM einkaeufe";
+		try (PreparedStatement stmt = con.prepareStatement(select);
+			ResultSet rs = stmt.executeQuery()) {
 
-		try (PreparedStatement stmt = con.prepareStatement(select)) {
-			try (ResultSet rs = stmt.executeQuery()) {
-				if (rs.next()) {
-					int nummer = rs.getInt(1);
-					int bezahlt = rs.getInt(2);
-					if (bezahlt == 1) {
-						return nummer++;
-					} else {
-						return nummer;
-					}
+			if (rs.next()) {
+				int max = rs.getInt(1);
+				if (rs.wasNull()) {
+					return 1;
 				}
+				return max;
 			}
+
 		} catch (SQLException e) {
 			throw new SQLException("Fehler beim Laden der Einkaufsnummer: " + e.getMessage(), e);
 		}
-		return 0;
-	}
 
+		return 1;
+	}
 }

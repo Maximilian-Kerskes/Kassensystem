@@ -3,32 +3,29 @@ package com.kassensystem.fachkonzept;
 import java.sql.Timestamp;
 
 public class Position {
-	private int einkaufsNummer;
-	private int produktNummer;
-	private Timestamp zeitpunkt;
-	private int menge;
+    private int einkaufsnummer;
+    private int produktnummer;
+    private Timestamp zeitpunkt;
+    private int menge;
 
-	public Position(int pEinkaufsNummer, int pProduktNummer, Timestamp pZeitpunkt, int pMenge) {
-		this.produktNummer = pProduktNummer;
-		this.einkaufsNummer = pEinkaufsNummer;
-		this.zeitpunkt = pZeitpunkt;
-		this.menge = pMenge;
-	}
+    public Position() {}
 
-	public int getEinkaufsnummer() {
-		return einkaufsNummer;
-	}
+    public Position(int einkaufsnummer, int produktnummer, Timestamp zeitpunkt, int menge) {
+        this.einkaufsnummer = einkaufsnummer;
+        this.produktnummer = produktnummer;
+        this.zeitpunkt = zeitpunkt;
+        this.menge = menge;
+    }
 
-	public int getProduktnummer() {
-		return produktNummer;
-	}
+    public int getEinkaufsnummer() { return einkaufsnummer; }
+    public void setEinkaufsnummer(int einkaufsnummer) { this.einkaufsnummer = einkaufsnummer; }
 
-	public Timestamp getZeitpunkt() {
-		return zeitpunkt;
-	}
+    public int getProduktnummer() { return produktnummer; }
+    public void setProduktnummer(int produktnummer) { this.produktnummer = produktnummer; }
 
-	public int getMenge() {
-		return menge;
-	}
+    public Timestamp getZeitpunkt() { return zeitpunkt; }
+    public void setZeitpunkt(Timestamp zeitpunkt) { this.zeitpunkt = zeitpunkt; }
 
+    public int getMenge() { return menge; }
+    public void setMenge(int menge) { this.menge = menge; }
 }

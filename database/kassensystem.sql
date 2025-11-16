@@ -21,16 +21,24 @@ USE `kassensystem`;
 
 -- Exportiere Struktur von Tabelle kassensystem.einkaeufe
 CREATE TABLE IF NOT EXISTS `einkaeufe` (
-  `einkaufsnummer` int(11) NOT NULL AUTO_INCREMENT,
-  `produktidprodukt` varchar(100) NOT NULL,
+  `einkaufsnr` int(11) NOT NULL,
+  `produktnr` int(11) NOT NULL DEFAULT 0,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `anzahl` int(11) DEFAULT NULL,
+<<<<<<< HEAD
   `bezahlt` BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (`einkaufsnummer`)
+=======
+  PRIMARY KEY (`einkaufsnr`) USING BTREE,
+  KEY `produktnr` (`produktnr`),
+  CONSTRAINT `produktnr` FOREIGN KEY (`produktnr`) REFERENCES `produkt` (`produktnr`) ON DELETE NO ACTION ON UPDATE CASCADE
+>>>>>>> 341a057 (datenbank jetzt actually)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportiere Daten aus Tabelle kassensystem.einkaeufe: ~0 rows (ungefähr)
+-- Exportiere Daten aus Tabelle kassensystem.einkaeufe: ~1 rows (ungefähr)
 DELETE FROM `einkaeufe`;
+INSERT INTO `einkaeufe` (`einkaufsnr`, `produktnr`, `timestamp`, `anzahl`) VALUES
+	(1, 1, '2025-10-21 08:51:49', 4);
 
 -- Exportiere Struktur von Tabelle kassensystem.produkt
 CREATE TABLE IF NOT EXISTS `produkt` (
@@ -41,8 +49,10 @@ CREATE TABLE IF NOT EXISTS `produkt` (
   PRIMARY KEY (`produktnr`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportiere Daten aus Tabelle kassensystem.produkt: ~0 rows (ungefähr)
+-- Exportiere Daten aus Tabelle kassensystem.produkt: ~1 rows (ungefähr)
 DELETE FROM `produkt`;
+INSERT INTO `produkt` (`produktnr`, `bezeichnung`, `verkaufspreis`, `bestand`) VALUES
+	(1, 'test_produkt', 2, 69);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

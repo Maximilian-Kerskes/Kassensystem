@@ -40,7 +40,7 @@ public class SteuerungTest {
 				produkt = dieDatenbank.fetchProdukt(1);
 			}
 
-			steuerung.scannedProdukt(produkt, 2);
+			steuerung.scannedProdukt(produkt);
 		});
 	}
 

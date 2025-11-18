@@ -2,7 +2,7 @@ const API_BASE_URL = "http://localhost:8080/api";
 
 async function ladeTabelle(typ) {
     const response = await fetch(`${API_BASE_URL}/${typ}`);
-    const daten = await response.json();
+    const daten = await response.json() || [];
 
     const tbody = document.querySelector("#datenTable tbody");
     const thead = document.querySelector("#tableHeader");

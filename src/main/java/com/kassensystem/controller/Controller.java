@@ -1,5 +1,6 @@
 package com.kassensystem.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -78,5 +79,15 @@ public class Controller {
 	public ResponseEntity<Integer> getNaechsteEinkaufsnummer() {
 		int naechsteNr = dieSteuerung.naechsteEinkaufsnummer();
 		return ResponseEntity.ok(naechsteNr);
+	}
+
+	@GetMapping("/kasse")
+	public ResponseEntity<String> kasseOeffnen() {
+		try {
+			dieSteuerung.kasseOeffnen();
+		} catch (IOException e) {
+			return ResponseEntity.badRequest().body("Kasse konnte nicht geoeffnet werden");
+		}
+		return ResponseEntity.ok("Kasse geoeffnet");
 	}
 }

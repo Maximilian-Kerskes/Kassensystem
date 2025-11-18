@@ -10,6 +10,13 @@ function berechneGesamtbetrag() {
     );
 }
 
+async function oeffneKasse() {
+	const res = await fetch(`${API_BASE_URL}/kasse`);
+	if (!res.ok) {
+		alert("Fehler beim Oeffnen der Kasse");
+	}
+}
+
 function renderBuchungen() {
     tbody.innerHTML = "";
     buchungen.forEach((pos, index) => {
@@ -99,5 +106,6 @@ document.getElementById("abschicken").addEventListener("click", async () => {
 
     buchungen.length = 0;
     renderBuchungen();
+    oeffneKasse()
     alert(`Alle Buchungen für Einkaufsnummer ${einkaufsnummer} abgeschickt!`);
 });

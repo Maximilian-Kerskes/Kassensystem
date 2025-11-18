@@ -20,7 +20,7 @@ public class DatenbankTest {
 
 	public void setUpBestandsTest() {
 		try {
-			Produkt produkt = dieDatenbank.fetchProdukt(1);
+			Produkt produkt = dieDatenbank.fetchProdukt("1");
 			dieDatenbank.setBestand(produkt, 10);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -30,7 +30,7 @@ public class DatenbankTest {
 	@Test
 	public void fetchProduktTest() {
 		assertDoesNotThrow(() -> {
-			dieDatenbank.fetchProdukt(1);
+			dieDatenbank.fetchProdukt("1");
 		});
 	}
 
@@ -39,13 +39,13 @@ public class DatenbankTest {
 		assertDoesNotThrow(() -> {
 			setUpBestandsTest();
 
-			Produkt produkt = dieDatenbank.fetchProdukt(1);
+			Produkt produkt = dieDatenbank.fetchProdukt("1");
 			double bestand = 5;
 
 			assertEquals(10, produkt.getBestand());
 
 			dieDatenbank.setBestand(produkt, bestand);
-			produkt = dieDatenbank.fetchProdukt(1);
+			produkt = dieDatenbank.fetchProdukt("1");
 			assertEquals(5, produkt.getBestand());
 		});
 	}

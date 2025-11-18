@@ -1,19 +1,19 @@
 package com.kassensystem.fachkonzept;
 
 public class Produkt {
-	private int produktNummer;
+	private String produktNummer;
 	private String bezeichnung;
 	private double verkaufspreis;
 	private double bestand;
 
-	public Produkt(int produktNummer, String bezeichnung, double verkaufspreis, double bestand) {
+	public Produkt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand) {
 		this.produktNummer = produktNummer;
 		this.bezeichnung = bezeichnung;
 		this.verkaufspreis = verkaufspreis;
 		this.bestand = bestand;
 	}
 
-	public int getProduktNummer() {
+	public String getProduktNummer() {
 		return produktNummer;
 	}
 

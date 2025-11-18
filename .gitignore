@@ -1,2 +1,4 @@
 target/
 bin/
+frontend/node_modules/
+frontend/package-lock.json

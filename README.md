@@ -2,5 +2,11 @@
 
 ## Quickstart
 ```bash
-mvn compile exec:java
+mvn spring-boot:run
+```
+
+## Quickstart Frontend
+```bash
+npm install
+npm start
 ```

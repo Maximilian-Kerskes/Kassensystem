@@ -1,5 +1,6 @@
 package com.kassensystem.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -12,58 +13,58 @@ import com.kassensystem.steuerung.Steuerung;
 @RestController
 @RequestMapping("/api")
 public class Controller {
-    private final Steuerung dieSteuerung;
+	private final Steuerung dieSteuerung;
 
-    public Controller() {
-        dieSteuerung = new Steuerung();
-    }
+	public Controller() {
+		dieSteuerung = new Steuerung();
+	}
 
-    @GetMapping("/produkte")
-    public ResponseEntity<List<Produkt>> getAllProdukte() {
-        List<Produkt> produkte = dieSteuerung.getProdukte();
-        return ResponseEntity.ok(produkte);
-    }
+	@GetMapping("/produkte")
+	public ResponseEntity<List<Produkt>> getAllProdukte() {
+		List<Produkt> produkte = dieSteuerung.getProdukte();
+		return ResponseEntity.ok(produkte);
+	}
 
-    @GetMapping("/produkte/{id}")
-    public ResponseEntity<Produkt> getProduktById(@PathVariable int id) {
-        Produkt produkt = dieSteuerung.getProdukt(id);
-        if (produkt == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(produkt);
-    }
+	@GetMapping("/produkte/{id}")
+	public ResponseEntity<Produkt> getProduktById(@PathVariable String id) {
+		Produkt produkt = dieSteuerung.getProdukt(id);
+		if (produkt == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(produkt);
+	}
 
-    @PostMapping("/produkte")
-    public ResponseEntity<String> createProdukt(@RequestBody Produkt produkt) {
-        dieSteuerung.createProdukt(produkt);
-        return ResponseEntity.ok("Produkt erstellt");
-    }
+	@PostMapping("/produkte")
+	public ResponseEntity<String> createProdukt(@RequestBody Produkt produkt) {
+		dieSteuerung.createProdukt(produkt);
+		return ResponseEntity.ok("Produkt erstellt");
+	}
 
-    @PutMapping("/produkte/{id}")
-    public ResponseEntity<String> updateProdukt(@PathVariable int id, @RequestBody Produkt produkt) {
-        Produkt existierendesProdukt = dieSteuerung.getProdukt(id);
-        if (existierendesProdukt == null) {
-            return ResponseEntity.notFound().build();
-        }
-        dieSteuerung.updateProdukt(produkt);
-        return ResponseEntity.ok("Produkt aktualisiert");
-    }
+	@PutMapping("/produkte/{id}")
+	public ResponseEntity<String> updateProdukt(@PathVariable String id, @RequestBody Produkt produkt) {
+		Produkt existierendesProdukt = dieSteuerung.getProdukt(id);
+		if (existierendesProdukt == null) {
+			return ResponseEntity.notFound().build();
+		}
+		dieSteuerung.updateProdukt(produkt);
+		return ResponseEntity.ok("Produkt aktualisiert");
+	}
 
-    @DeleteMapping("/produkte/{id}")
-    public ResponseEntity<String> deleteProduktById(@PathVariable int id) {
-        Produkt existierendesProdukt = dieSteuerung.getProdukt(id);
-        if (existierendesProdukt == null) {
-            return ResponseEntity.notFound().build();
-        }
-        dieSteuerung.deleteProdukt(id);
-        return ResponseEntity.ok("Produkt gelöscht");
-    }
+	@DeleteMapping("/produkte/{id}")
+	public ResponseEntity<String> deleteProduktById(@PathVariable String id) {
+		Produkt existierendesProdukt = dieSteuerung.getProdukt(id);
+		if (existierendesProdukt == null) {
+			return ResponseEntity.notFound().build();
+		}
+		dieSteuerung.deleteProdukt(id);
+		return ResponseEntity.ok("Produkt gelöscht");
+	}
 
-    @GetMapping("/einkaeufe")
-    public ResponseEntity<List<Position>> getAllEinkauefe() {
-        List<Position> einkaeufe = dieSteuerung.getEinkaeufe();
-        return ResponseEntity.ok(einkaeufe);
-    }
+	@GetMapping("/einkaeufe")
+	public ResponseEntity<List<Position>> getAllEinkauefe() {
+		List<Position> einkaeufe = dieSteuerung.getEinkaeufe();
+		return ResponseEntity.ok(einkaeufe);
+	}
 
 	@PostMapping("/positionen")
 	public ResponseEntity<String> createPosition(@RequestBody Position position) {
@@ -78,5 +79,15 @@ public class Controller {
 	public ResponseEntity<Integer> getNaechsteEinkaufsnummer() {
 		int naechsteNr = dieSteuerung.naechsteEinkaufsnummer();
 		return ResponseEntity.ok(naechsteNr);
+	}
+
+	@GetMapping("/kasse")
+	public ResponseEntity<String> kasseOeffnen() {
+		try {
+			dieSteuerung.kasseOeffnen();
+		} catch (IOException e) {
+			return ResponseEntity.badRequest().body("Kasse konnte nicht geoeffnet werden");
+		}
+		return ResponseEntity.ok("Kasse geoeffnet");
 	}
 }

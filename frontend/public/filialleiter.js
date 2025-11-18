@@ -2,7 +2,7 @@ const API_BASE_URL = "http://localhost:8080/api";
 
 async function ladeTabelle(typ) {
     const response = await fetch(`${API_BASE_URL}/${typ}`);
-    const daten = await response.json() || [];
+    const daten = await response.json();
 
     const tbody = document.querySelector("#datenTable tbody");
     const thead = document.querySelector("#tableHeader");
@@ -19,7 +19,7 @@ async function ladeTabelle(typ) {
             <th>Aktion</th>
         `;
 
-        daten.forEach(p => {
+        daten.forEach((p) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${p.produktNummer}</td>
@@ -43,7 +43,6 @@ async function ladeTabelle(typ) {
             <td><button onclick="erstelleProdukt(this)">Hinzufügen</button></td>
         `;
         tbody.appendChild(trNeu);
-
     } else if (typ === "einkaeufe") {
         thead.innerHTML = `
             <th>Einkaufnr</th>
@@ -52,7 +51,7 @@ async function ladeTabelle(typ) {
             <th>Datum</th>
         `;
 
-        daten.forEach(e => {
+        daten.forEach((e) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${e.einkaufsnummer}</td>
@@ -73,11 +72,19 @@ async function speichereProdukt(button) {
     const bestand = tr.children[3].textContent;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/produkte/${produktNummer}`, { // <-- ID anhängen
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ produktNummer, bezeichnung, verkaufspreis, bestand })
-        });
+        const response = await fetch(
+            `${API_BASE_URL}/produkte/${produktNummer}`,
+            {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    produktNummer,
+                    bezeichnung,
+                    verkaufspreis,
+                    bestand,
+                }),
+            },
+        );
         if (response.ok) {
             alert("Produkt gespeichert!");
             ladeTabelle("produkte");
@@ -106,7 +113,12 @@ async function erstelleProdukt(button) {
         const response = await fetch(`${API_BASE_URL}/produkte`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ produktNummer, bezeichnung, verkaufspreis, bestand })
+            body: JSON.stringify({
+                produktNummer,
+                bezeichnung,
+                verkaufspreis,
+                bestand,
+            }),
         });
         if (response.ok) {
             alert("Produkt hinzugefügt!");
@@ -124,7 +136,12 @@ async function loescheProdukt(produktNummer) {
     if (!confirm("Produkt wirklich löschen?")) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/produkte/${produktNummer}`, { method: "DELETE" });
+        const response = await fetch(
+            `${API_BASE_URL}/produkte/${produktNummer}`,
+            {
+                method: "DELETE",
+            },
+        );
         if (response.ok) {
             alert("Produkt gelöscht!");
             ladeTabelle("produkte");

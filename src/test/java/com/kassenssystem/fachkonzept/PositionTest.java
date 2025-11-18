@@ -12,7 +12,7 @@ public class PositionTest {
 	@Test
 	public void constructorTest() {
 		Timestamp zeitpunkt = Timestamp.valueOf(LocalDateTime.now());
-		Position positionTest = new Position(1, 1, zeitpunkt, 9);
+		Position positionTest = new Position(1, "1", zeitpunkt, 9);
 		assertEquals(1, positionTest.getEinkaufsnummer());
 		assertEquals(1, positionTest.getProduktnummer());
 		assertEquals(zeitpunkt, positionTest.getZeitpunkt());

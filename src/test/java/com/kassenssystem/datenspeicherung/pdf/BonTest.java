@@ -10,9 +10,9 @@ import com.kassensystem.fachkonzept.Produkt;
 
 public class BonTest {
 	private Produkt[] getMockProdukte() {
-		Produkt p1 = new Produkt(1, "Apfel", 0.99, 10);
-		Produkt p2 = new Produkt(2, "Brot", 1.50, 5);
-		Produkt p3 = new Produkt(3, "Milch", 0.80, 8);
+		Produkt p1 = new Produkt("1", "Apfel", 0.99, 10);
+		Produkt p2 = new Produkt("2", "Brot", 1.50, 5);
+		Produkt p3 = new Produkt("3", "Milch", 0.80, 8);
 		return new Produkt[] { p1, p2, p3 };
 	}
 

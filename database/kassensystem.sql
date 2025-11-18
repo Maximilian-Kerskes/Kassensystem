@@ -22,37 +22,41 @@ USE `kassensystem`;
 -- Exportiere Struktur von Tabelle kassensystem.einkaeufe
 CREATE TABLE IF NOT EXISTS `einkaeufe` (
   `einkaufsnr` int(11) NOT NULL,
-  `produktnr` int(11) NOT NULL DEFAULT 0,
+  `produktnr` varchar(100) NOT NULL DEFAULT '0',
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `anzahl` int(11) DEFAULT NULL,
-<<<<<<< HEAD
-  `bezahlt` BOOLEAN NOT NULL DEFAULT FALSE,
-  PRIMARY KEY (`einkaufsnummer`)
-=======
-  PRIMARY KEY (`einkaufsnr`) USING BTREE,
   KEY `produktnr` (`produktnr`),
-  CONSTRAINT `produktnr` FOREIGN KEY (`produktnr`) REFERENCES `produkt` (`produktnr`) ON DELETE NO ACTION ON UPDATE CASCADE
->>>>>>> 341a057 (datenbank jetzt actually)
+  CONSTRAINT `produktnr` FOREIGN KEY (`produktnr`) REFERENCES `produkt` (`produktnr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportiere Daten aus Tabelle kassensystem.einkaeufe: ~1 rows (ungefähr)
+-- Exportiere Daten aus Tabelle kassensystem.einkaeufe: ~8 rows (ungefähr)
 DELETE FROM `einkaeufe`;
 INSERT INTO `einkaeufe` (`einkaufsnr`, `produktnr`, `timestamp`, `anzahl`) VALUES
-	(1, 1, '2025-10-21 08:51:49', 4);
+	(1, '0', '2025-11-16 14:05:42', 45),
+	(2, '0', '2025-11-16 14:05:59', 134),
+	(2, '1', '2025-11-16 14:07:14', 45),
+	(3, '1', '2025-11-16 14:43:04', 4),
+	(4, '1', '2025-11-16 14:44:30', 10),
+	(4, '0', '2025-11-16 14:44:33', 15),
+	(5, '0', '2025-11-16 14:49:52', 10),
+	(5, '0', '2025-11-16 14:50:03', 134);
 
 -- Exportiere Struktur von Tabelle kassensystem.produkt
 CREATE TABLE IF NOT EXISTS `produkt` (
-  `produktnr` int(11) NOT NULL,
+  `produktnr` varchar(100) NOT NULL DEFAULT '0',
   `bezeichnung` varchar(100) NOT NULL DEFAULT '0',
   `verkaufspreis` double NOT NULL DEFAULT 0,
   `bestand` double DEFAULT NULL,
   PRIMARY KEY (`produktnr`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportiere Daten aus Tabelle kassensystem.produkt: ~1 rows (ungefähr)
+-- Exportiere Daten aus Tabelle kassensystem.produkt: ~4 rows (ungefähr)
 DELETE FROM `produkt`;
 INSERT INTO `produkt` (`produktnr`, `bezeichnung`, `verkaufspreis`, `bestand`) VALUES
-	(1, 'test_produkt', 2, 69);
+	('0', 'test_getraenk', 3, 50),
+	('1', 'test_produkt', 2, 69),
+	('4030500021799', 'Gauloises Blau Zigaretten', 10, 70),
+	('4311596490363', 'Booster Exotic Energy Drink', 0.79, 60);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

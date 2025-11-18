@@ -25,7 +25,7 @@ public class Controller {
     }
 
     @GetMapping("/produkte/{id}")
-    public ResponseEntity<Produkt> getProduktById(@PathVariable int id) {
+    public ResponseEntity<Produkt> getProduktById(@PathVariable String id) {
         Produkt produkt = dieSteuerung.getProdukt(id);
         if (produkt == null) {
             return ResponseEntity.notFound().build();
@@ -40,7 +40,7 @@ public class Controller {
     }
 
     @PutMapping("/produkte/{id}")
-    public ResponseEntity<String> updateProdukt(@PathVariable int id, @RequestBody Produkt produkt) {
+    public ResponseEntity<String> updateProdukt(@PathVariable String id, @RequestBody Produkt produkt) {
         Produkt existierendesProdukt = dieSteuerung.getProdukt(id);
         if (existierendesProdukt == null) {
             return ResponseEntity.notFound().build();
@@ -50,7 +50,7 @@ public class Controller {
     }
 
     @DeleteMapping("/produkte/{id}")
-    public ResponseEntity<String> deleteProduktById(@PathVariable int id) {
+    public ResponseEntity<String> deleteProduktById(@PathVariable String id) {
         Produkt existierendesProdukt = dieSteuerung.getProdukt(id);
         if (existierendesProdukt == null) {
             return ResponseEntity.notFound().build();

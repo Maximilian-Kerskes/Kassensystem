@@ -15,7 +15,7 @@ import com.kassensystem.steuerung.Steuerung;
 public class SteuerungTest {
 	public void setUpTestProdukt() {
 		try (Datenbank dieDatenbank = new Datenbank()) {
-			Produkt produkt = dieDatenbank.fetchProdukt(1);
+			Produkt produkt = dieDatenbank.fetchProdukt("1");
 			if (produkt == null) {
 				System.out.println("⚠️ Produkt mit ID 1 nicht gefunden. Test könnte fehlschlagen.");
 				return;
@@ -37,7 +37,7 @@ public class SteuerungTest {
 
 			Produkt produkt;
 			try (Datenbank dieDatenbank = new Datenbank()) {
-				produkt = dieDatenbank.fetchProdukt(1);
+				produkt = dieDatenbank.fetchProdukt("1");
 			}
 
 			steuerung.scannedProdukt(produkt);
@@ -55,7 +55,7 @@ public class SteuerungTest {
 
 			Produkt produkt;
 			try (Datenbank dieDatenbank = new Datenbank()) {
-				produkt = dieDatenbank.fetchProdukt(1);
+				produkt = dieDatenbank.fetchProdukt("1");
 			}
 
 			steuerung.changeMenge(produkt, 5);
@@ -73,10 +73,10 @@ public class SteuerungTest {
 
 			Produkt produkt;
 			try (Datenbank dieDatenbank = new Datenbank()) {
-				produkt = dieDatenbank.fetchProdukt(1);
+				produkt = dieDatenbank.fetchProdukt("1");
 			}
 
-			steuerung.deleteProdukt(produkt);
+			steuerung.deleteProdukt("1");
 		});
 	}
 
@@ -99,10 +99,10 @@ public class SteuerungTest {
 	public void rueckGeldEventTest() {
 		assertDoesNotThrow(() -> {
 			Steuerung dieSteuerung = new Steuerung();
-			double rueckGeld = dieSteuerung.rueckGeldEvent(1, 1);
+			double rueckGeld = dieSteuerung.rueckGeldEvent("1", 1);
 			assertEquals(14, rueckGeld);
 
-			rueckGeld = dieSteuerung.rueckGeldEvent(1, 5);
+			rueckGeld = dieSteuerung.rueckGeldEvent("1", 5);
 			assertEquals(10, rueckGeld);
 		});
 	}
@@ -113,14 +113,14 @@ public class SteuerungTest {
 	public void bestandUpdateEventTest() {
 		setUpTestProdukt();
 		Steuerung dieSteuerung = new Steuerung();
-		int produktNummer = 1;
+		String produktNummer = "1";
 		assertDoesNotThrow(() -> {
 			Datenbank dieDatenbank = new Datenbank();
-			Produkt dasProdukt = dieDatenbank.fetchProdukt(1);
+			Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
 			assertEquals(10, dasProdukt.getBestand());
 			dieSteuerung.bestandUpdateEvent(produktNummer);
 
-			dasProdukt = dieDatenbank.fetchProdukt(1);
+			dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
 			assertEquals(9, dasProdukt.getBestand());
 		});
 	}

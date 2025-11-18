@@ -4,13 +4,13 @@ import java.sql.Timestamp;
 
 public class Position {
     private int einkaufsnummer;
-    private int produktnummer;
+    private String produktnummer;
     private Timestamp zeitpunkt;
     private int menge;
 
     public Position() {}
 
-    public Position(int einkaufsnummer, int produktnummer, Timestamp zeitpunkt, int menge) {
+    public Position(int einkaufsnummer, String produktnummer, Timestamp zeitpunkt, int menge) {
         this.einkaufsnummer = einkaufsnummer;
         this.produktnummer = produktnummer;
         this.zeitpunkt = zeitpunkt;
@@ -20,8 +20,9 @@ public class Position {
     public int getEinkaufsnummer() { return einkaufsnummer; }
     public void setEinkaufsnummer(int einkaufsnummer) { this.einkaufsnummer = einkaufsnummer; }
 
-    public int getProduktnummer() { return produktnummer; }
-    public void setProduktnummer(int produktnummer) { this.produktnummer = produktnummer; }
+    public String getProduktnummer() { return produktnummer; }
+	
+    public void setProduktnummer(String produktnummer) { this.produktnummer = produktnummer; }
 
     public Timestamp getZeitpunkt() { return zeitpunkt; }
     public void setZeitpunkt(Timestamp zeitpunkt) { this.zeitpunkt = zeitpunkt; }

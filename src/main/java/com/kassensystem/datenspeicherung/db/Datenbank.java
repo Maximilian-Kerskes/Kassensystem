@@ -37,15 +37,15 @@ public class Datenbank implements AutoCloseable {
 		}
 	}
 
-	public Produkt fetchProdukt(int produktNummer) throws SQLException {
+	public Produkt fetchProdukt(String produktNummer) throws SQLException {
 		String sqlStmt = "SELECT * ";
 		sqlStmt += "FROM produkt ";
 		sqlStmt += "WHERE produktnr = (?)";
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
-			stmt.setInt(1, produktNummer);
+			stmt.setString(1, produktNummer);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
-					return new Produkt(rs.getInt(1), rs.getString(2), rs.getDouble(3),
+					return new Produkt(rs.getString(1), rs.getString(2), rs.getDouble(3),
 							rs.getDouble(4));
 				} else {
 					return null;
@@ -66,7 +66,7 @@ public class Datenbank implements AutoCloseable {
 
 	        while (rs.next()) {
 	            produkte.add(new Produkt(
-	                    rs.getInt(1),
+	                    rs.getString(1),
 	                    rs.getString(2),
 	                    rs.getDouble(3),
 	                    rs.getDouble(4)
@@ -91,7 +91,7 @@ public class Datenbank implements AutoCloseable {
 			while (rs.next()) {
 				einkaeufe.add(new Position( 
 					rs.getInt(1), 
-					rs.getInt(2),        
+					rs.getString(2),        
 					rs.getTimestamp(3),  
 					rs.getInt(4)         
 				));
@@ -104,10 +104,10 @@ public class Datenbank implements AutoCloseable {
 	}
 
 	
-	public void deleteProdukt(int produktNummer) throws SQLException {
+	public void deleteProdukt(String produktNummer) throws SQLException {
 	    String sqlStmt = "DELETE FROM produkt WHERE produktnr = ?";
 	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
-	        stmt.setInt(1, produktNummer);
+	        stmt.setString(1, produktNummer);
 	        int rowsAffected = stmt.executeUpdate();
 	        if (rowsAffected == 0) {
 	            throw new SQLException("Kein Produkt mit der Nummer " + produktNummer + " gefunden.");
@@ -117,13 +117,13 @@ public class Datenbank implements AutoCloseable {
 	    }
 	}
 	
-	public void updateProdukt(int produktNummer, String bezeichnung, double verkaufspreis, double bestand) throws SQLException {
+	public void updateProdukt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand) throws SQLException {
 	    String sqlStmt = "UPDATE produkt SET bezeichnung = ?, verkaufspreis = ?, bestand = ? WHERE produktnr = ?";
 	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
 	        stmt.setString(1, bezeichnung);
 	        stmt.setDouble(2, verkaufspreis);
 	        stmt.setDouble(3, bestand );
-	        stmt.setInt(4, produktNummer);
+	        stmt.setString(4, produktNummer);
 
 	        int rowsAffected = stmt.executeUpdate();
 	        if (rowsAffected == 0) {
@@ -134,10 +134,10 @@ public class Datenbank implements AutoCloseable {
 	    }
 	}
 	
-	public void createProdukt(int produktNummer, String bezeichnung, double verkaufspreis, double bestand) throws SQLException {
+	public void createProdukt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand) throws SQLException {
 	    String sqlStmt = "INSERT INTO produkt (produktnr, bezeichnung, verkaufspreis, bestand) VALUES (?, ?, ?, ?)";
 	    try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
-	        stmt.setInt(1, produktNummer);
+	        stmt.setString(1, produktNummer);
 	        stmt.setString(2, bezeichnung);
 	        stmt.setDouble(3, verkaufspreis);
 	        stmt.setDouble(4, bestand);
@@ -156,7 +156,7 @@ public class Datenbank implements AutoCloseable {
 
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
 			stmt.setDouble(1, neuerBestand);
-			stmt.setInt(2, produkt.getProduktNummer());
+			stmt.setString(2, produkt.getProduktNummer());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new SQLException("Fehler beim setzen des Bestands: " + e.getMessage(), e);
@@ -168,7 +168,7 @@ public class Datenbank implements AutoCloseable {
 
 		Produkt dasProdukt = pProdukt;
 		int einkaufsnummer = pEinkaufsnummer;
-		int produktID = dasProdukt.getProduktNummer();
+		String produktID = dasProdukt.getProduktNummer();
 		int menge = pMenge;
 
 		String update = "UPDATE einkaeufe ";
@@ -178,7 +178,7 @@ public class Datenbank implements AutoCloseable {
 
 		try (PreparedStatement stmt = con.prepareStatement(update)) {
 			stmt.setInt(1, menge);
-			stmt.setInt(2, produktID);
+			stmt.setString(2, produktID);
 			stmt.setInt(3, einkaufsnummer);
 
 			stmt.executeUpdate();
@@ -189,7 +189,7 @@ public class Datenbank implements AutoCloseable {
 
 	public void deletePosition(Produkt pProdukt, int pEinkaufsnummer) throws SQLException {
 		Produkt dasProdukt = pProdukt;
-		int produktID = dasProdukt.getProduktNummer();
+		String produktID = dasProdukt.getProduktNummer();
 
 		String delete = "DELETE FROM";
 		delete += "einkaeufe";
@@ -197,7 +197,7 @@ public class Datenbank implements AutoCloseable {
 		delete += "produktnr = ?";
 
 		try (PreparedStatement stmt = con.prepareStatement(delete)) {
-			stmt.setInt(1, produktID);
+			stmt.setString(1, produktID);
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -205,12 +205,12 @@ public class Datenbank implements AutoCloseable {
 		}
 	}
 
-	public void createPosition(int einkaufsnummer, int produktnr, int anzahl, Timestamp zeitpunkt) throws SQLException {
+	public void createPosition(int einkaufsnummer, String produktnr, int anzahl, Timestamp zeitpunkt) throws SQLException {
 		String insert = "INSERT INTO einkaeufe (einkaufsnr, produktnr, timestamp, anzahl) VALUES (?, ?, ?, ?)";
 
 		try (PreparedStatement stmt = con.prepareStatement(insert)) {
 			stmt.setInt(1, einkaufsnummer);
-			stmt.setInt(2, produktnr);
+			stmt.setString(2, produktnr);
 			stmt.setTimestamp(3, zeitpunkt);
 			stmt.setInt(4, anzahl);
 

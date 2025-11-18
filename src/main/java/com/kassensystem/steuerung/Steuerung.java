@@ -21,7 +21,7 @@ public class Steuerung {
         }
     }
 
-    public void bestandUpdateEvent(int produktNummer) {
+    public void bestandUpdateEvent(String produktNummer) {
         try {
             Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
             double bestand = dasProdukt.getBestand();
@@ -35,7 +35,7 @@ public class Steuerung {
         }
     }
 
-    public double rueckGeldEvent(int produktNummer, double bezahlterBetrag) {
+    public double rueckGeldEvent(String produktNummer, double bezahlterBetrag) {
         try {
             Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
             return rueckgeldBerechnen(bezahlterBetrag, dasProdukt.getVerkaufspreis());
@@ -69,7 +69,7 @@ public class Steuerung {
         }
     }
 
-    public void deleteProdukt(Produkt pProdukt) {
+    public void deletePosition(Produkt pProdukt, int produkt) {
         try {
             dieDatenbank.deletePosition(pProdukt, einkaufsnummer);
         } catch (SQLException e) {
@@ -104,7 +104,7 @@ public class Steuerung {
         return null;
     }
 
-    public Produkt getProdukt(int produktnr) {
+    public Produkt getProdukt(String produktnr) {
         try {
             return dieDatenbank.fetchProdukt(produktnr);
         } catch (SQLException e) {
@@ -139,7 +139,7 @@ public class Steuerung {
         }
     }
 
-    public void deleteProdukt(int produktnr) {
+    public void deleteProdukt(String produktnr) {
         try {
             dieDatenbank.deleteProdukt(produktnr);
         } catch (SQLException e) {

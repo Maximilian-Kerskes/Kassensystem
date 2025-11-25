@@ -21,16 +21,29 @@ async function ladeTabelle(typ) {
 
         daten.forEach((p) => {
             const tr = document.createElement("tr");
-            tr.innerHTML = `
+            if (p.archiviert == true) {
+		// lagere style aus
+                tr.innerHTML = `
+                <td style="text-decoration: line-through">${p.produktNummer}</td>
+                <td contenteditable="false" style="text-decoration: line-through">${p.bezeichnung}</td>
+                <td contenteditable="false" style="text-decoration: line-through">${p.verkaufspreis}</td>
+                <td contenteditable="false" style="text-decoration: line-through">${p.bestand}</td>
+                <td>
+                    <button onclick="archiviereProdukt(${p.produktNummer}, ${p.archiviert})">de-archivieren</button>
+                </td>
+            `;
+            } else {
+                tr.innerHTML = `
                 <td>${p.produktNummer}</td>
                 <td contenteditable="true">${p.bezeichnung}</td>
                 <td contenteditable="true">${p.verkaufspreis}</td>
                 <td contenteditable="true">${p.bestand}</td>
                 <td>
                     <button onclick="speichereProdukt(this)">Speichern</button>
-                    <button onclick="loescheProdukt(${p.produktNummer})">Löschen</button>
+                    <button onclick="archiviereProdukt(${p.produktNummer}, ${p.archiviert})">archivieren</button>
                 </td>
             `;
+            }
             tbody.appendChild(tr);
         });
 
@@ -132,25 +145,29 @@ async function erstelleProdukt(button) {
     }
 }
 
-async function loescheProdukt(produktNummer) {
-    if (!confirm("Produkt wirklich löschen?")) return;
+async function archiviereProdukt(produktNummer, archiviert) {
+    text = archiviert ? "de-archivieren" : "archivieren";
+    archiviert = !archiviert;
+    if (!confirm(`produkt wirklich ${text}?`)) return;
 
     try {
         const response = await fetch(
-            `${API_BASE_URL}/produkte/${produktNummer}`,
+            `${API_BASE_URL}/produkte/${produktNummer}/archivieren`,
             {
-                method: "DELETE",
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(archiviert),
             },
         );
         if (response.ok) {
-            alert("Produkt gelöscht!");
+            alert(`Produkt ${text}!`);
             ladeTabelle("produkte");
         } else {
-            alert("Fehler beim Löschen");
+            alert(`Fehler beim ${text}`);
         }
     } catch (err) {
         console.error(err);
-        alert("Fehler beim Löschen");
+        alert(`Fehler beim ${text}`);
     }
 }
 

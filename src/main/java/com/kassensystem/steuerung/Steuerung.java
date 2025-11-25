@@ -2,7 +2,6 @@ package com.kassensystem.steuerung;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
 
 import com.kassensystem.datenspeicherung.db.Datenbank;
@@ -138,15 +137,16 @@ public class Steuerung {
 					produkt.getProduktNummer(),
 					produkt.getBezeichnung(),
 					produkt.getVerkaufspreis(),
-					produkt.getBestand());
+					produkt.getBestand(),
+					produkt.getArchiviert());
 		} catch (SQLException e) {
 			System.out.println("Fehler beim Aktualisieren des Produkts: " + e.getMessage());
 		}
 	}
 
-	public void deleteProdukt(String produktnr) {
+	public void archiveProduktById(String produktnr, boolean archiviert) {
 		try {
-			dieDatenbank.deleteProdukt(produktnr);
+			dieDatenbank.archiveProduktById(produktnr, archiviert);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim Löschen des Produkts: " + e.getMessage());
 		}

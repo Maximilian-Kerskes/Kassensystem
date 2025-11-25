@@ -65,7 +65,7 @@ public class SteuerungTest {
 	// TODO
 	// use mockdb instead of real, this WILL break if the DB changes
 	@Test
-	public void deleteProduktTest() {
+	public void archiveProduktTest() {
 		setUpTestProdukt();
 		assertDoesNotThrow(() -> {
 			Steuerung steuerung = new Steuerung();
@@ -76,7 +76,8 @@ public class SteuerungTest {
 				produkt = dieDatenbank.fetchProdukt("1");
 			}
 
-			steuerung.deleteProdukt("1");
+			steuerung.archiveProduktById("1", true);
+			steuerung.archiveProduktById("1", false);
 		});
 	}
 

@@ -5,19 +5,36 @@ body {
 
 .kassierer-body {
     display: flex;
-    gap: 2rem;
+    gap: 3rem;
 }
 
-form {
+.eingabe-container {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    width: 200px;
+    gap: 1rem;
+    width: 250px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+button {
+    padding: 0.5rem;
+    cursor: pointer;
+    width: 100%;
+}
+
+.buchungen-container {
+    flex-grow: 1;
 }
 
 table {
     border-collapse: collapse;
-    width: 500px;
+    width: 100%;
+    max-width: 700px;
 }
 
 table, th, td {
@@ -27,8 +44,4 @@ table, th, td {
 th, td {
     padding: 0.5rem;
     text-align: left;
-}
-
-button {
-    cursor: pointer;
 }

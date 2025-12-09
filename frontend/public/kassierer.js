@@ -1,20 +1,19 @@
 const API_BASE_URL = "http://localhost:8080/api";
-const form = document.getElementById("buchungsForm");
 const tbody = document.querySelector("#buchungenTabelle tbody");
 const buchungen = [];
 
 function berechneGesamtbetrag() {
     return buchungen.reduce(
         (summe, pos) => summe + pos.menge * pos.produkt.verkaufspreis,
-        0,
+        0
     );
 }
 
 async function oeffneKasse() {
-	const res = await fetch(`${API_BASE_URL}/kasse`);
-	if (!res.ok) {
-		alert("Fehler beim Oeffnen der Kasse");
-	}
+    const res = await fetch(`${API_BASE_URL}/kasse`);
+    if (!res.ok) {
+        alert("Fehler beim Öffnen der Kasse");
+    }
 }
 
 function renderBuchungen() {
@@ -22,12 +21,12 @@ function renderBuchungen() {
     buchungen.forEach((pos, index) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-                        <td>${pos.produkt.produktNummer}</td>
-                        <td>${pos.produkt.bezeichnung}</td>
-                        <td>${pos.menge}</td>
-                        <td>${new Date(pos.zeitpunkt).toLocaleString()}</td>
-                        <td><button data-index="${index}">Löschen</button></td>
-                `;
+            <td>${pos.produkt.produktNummer}</td>
+            <td>${pos.produkt.bezeichnung}</td>
+            <td>${pos.menge}</td>
+            <td>${new Date(pos.zeitpunkt).toLocaleString()}</td>
+            <td><button data-index="${index}">Löschen</button></td>
+        `;
         tbody.appendChild(tr);
     });
 
@@ -43,9 +42,8 @@ function renderBuchungen() {
         berechneGesamtbetrag().toFixed(2);
 }
 
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const produktNr = document.getElementById("produkt").value;
+async function bucheProdukt() {
+    const produktNr = document.getElementById("produkt").value.trim();
     const menge = parseInt(document.getElementById("menge").value);
 
     if (!produktNr || !menge) {
@@ -68,7 +66,29 @@ form.addEventListener("submit", async (e) => {
     });
 
     renderBuchungen();
-    form.reset();
+
+    document.getElementById("produkt").value = "";
+    document.getElementById("menge").value = 1;
+    document.getElementById("produkt").focus();
+}
+
+document.getElementById("produkt").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("menge").focus();
+        document.getElementById("menge").select();
+    }
+});
+
+document.getElementById("menge").addEventListener("keydown", async (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        await bucheProdukt();
+    }
+});
+
+document.getElementById("buchen").addEventListener("click", async () => {
+    await bucheProdukt();
 });
 
 document.getElementById("abschicken").addEventListener("click", async () => {
@@ -77,13 +97,12 @@ document.getElementById("abschicken").addEventListener("click", async () => {
         return;
     }
 
-    const einkaufsNrRes = await fetch(
-        `${API_BASE_URL}/einkaeufe/naechste-einkaufsnr`,
-    );
+    const einkaufsNrRes = await fetch(`${API_BASE_URL}/einkaeufe/naechste-einkaufsnr`);
     if (!einkaufsNrRes.ok) {
         alert("Fehler beim Abrufen der Einkaufsnummer!");
         return;
     }
+
     const einkaufsnummer = await einkaufsNrRes.json();
 
     for (const pos of buchungen) {
@@ -106,6 +125,7 @@ document.getElementById("abschicken").addEventListener("click", async () => {
 
     buchungen.length = 0;
     renderBuchungen();
-    oeffneKasse()
+    await oeffneKasse();
+
     alert(`Alle Buchungen für Einkaufsnummer ${einkaufsnummer} abgeschickt!`);
 });

@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kassierer</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body class="kassierer-body">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Kassierer</title>
+		<link rel="stylesheet" href="styles.css">
+	</head>
+	<body class="kassierer-body">
 
-    <div class="eingabe-container">
-        <h1>Kassierer</h1>
+		<div class="eingabe-container">
+			<h1>Kassierer</h1>
 
-        <div class="input-group">
-            <label for="produkt">Produktnummer:</label>
-            <input type="text" id="produkt" autocomplete="off">
-        </div>
+			<div class="input-group">
+				<label for="produkt">Produktnummer:</label>
+				<input type="text" id="produkt" autocomplete="off">
+			</div>
 
-        <div class="input-group">
-            <label for="menge">Menge:</label>
-            <input type="number" id="menge" min="1" value="1">
-        </div>
+			<div class="input-group">
+				<label for="menge">Menge:</label>
+				<input type="number" id="menge" min="1" value="1">
+			</div>
 
-        <button id="buchen">Buchen</button>
-        <button id="abschicken">Alle Buchungen abschicken</button>
-    </div>
+			<button id="buchen">Buchen</button>
+			<button id="abschicken">Alle Buchungen abschicken</button>
+		</div>
 
-    <div class="buchungen-container">
-        <h2>Buchungen</h2>
-        <table id="buchungenTabelle">
-            <thead>
-                <tr>
-                    <th>Produktnummer</th>
-                    <th>Name</th>
-                    <th>Menge</th>
-                    <th>Zeitpunkt</th>
-                    <th>Aktion</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+		<div class="buchungen-container">
+			<h2>Buchungen</h2>
+			<table id="buchungenTabelle">
+				<thead>
+					<tr>
+						<th>Produktnummer</th>
+						<th>Name</th>
+						<th>Menge</th>
+						<th>Zeitpunkt</th>
+						<th>Aktion</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
 
-        <h3>Gesamtbetrag: <span id="gesamtbetrag">0.00</span> €</h3>
-    </div>
+			<h3>Gesamtbetrag: <span id="gesamtbetrag">0.00</span>
+				€</h3>
+		</div>
 
-    <script src="kassierer.js"></script>
-</body>
+		<script src="kassierer.js"></script>
+	</body>
 </html>

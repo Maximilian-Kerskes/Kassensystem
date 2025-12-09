@@ -22,7 +22,7 @@ async function ladeTabelle(typ) {
         daten.forEach((p) => {
             const tr = document.createElement("tr");
             if (p.archiviert == true) {
-		// lagere style aus
+                // lagere style aus
                 tr.innerHTML = `
                 <td style="text-decoration: line-through">${p.produktNummer}</td>
                 <td contenteditable="false" style="text-decoration: line-through">${p.bezeichnung}</td>

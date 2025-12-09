@@ -46,7 +46,7 @@ public class Datenbank implements AutoCloseable {
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 					return new Produkt(rs.getString(1), rs.getString(2), rs.getDouble(3),
-							rs.getDouble(4));
+							rs.getDouble(4), rs.getBoolean(5));
 				} else {
 					return null;
 				}
@@ -69,7 +69,8 @@ public class Datenbank implements AutoCloseable {
 						rs.getString(1),
 						rs.getString(2),
 						rs.getDouble(3),
-						rs.getDouble(4)));
+						rs.getDouble(4),
+						rs.getBoolean(5)));
 			}
 
 			return produkte;
@@ -100,26 +101,29 @@ public class Datenbank implements AutoCloseable {
 		}
 	}
 
-	public void deleteProdukt(String produktNummer) throws SQLException {
-		String sqlStmt = "DELETE FROM produkt WHERE produktnr = ?";
+	public void archiveProduktById(String produktNummer, boolean archiviert) throws SQLException {
+		String sqlStmt = "UPDATE produkt SET archiviert = ? WHERE produktnr = ?";
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
-			stmt.setString(1, produktNummer);
+			stmt.setBoolean(1, archiviert);
+			stmt.setString(2, produktNummer);
 			int rowsAffected = stmt.executeUpdate();
 			if (rowsAffected == 0) {
 				throw new SQLException("Kein Produkt mit der Nummer " + produktNummer + " gefunden.");
 			}
 		} catch (SQLException e) {
-			throw new SQLException("Fehler beim Löschen des Produkts: " + e.getMessage(), e);
+			throw new SQLException("Fehler beim archivieren des Produkts: " + e.getMessage(), e);
 		}
 	}
 
-	public void updateProdukt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand)
+	public void updateProdukt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand,
+			boolean archiviert)
 			throws SQLException {
-		String sqlStmt = "UPDATE produkt SET bezeichnung = ?, verkaufspreis = ?, bestand = ? WHERE produktnr = ?";
+		String sqlStmt = "UPDATE produkt SET bezeichnung = ?, verkaufspreis = ?, bestand = ?, archiviert = ? WHERE produktnr = ?";
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
 			stmt.setString(1, bezeichnung);
 			stmt.setDouble(2, verkaufspreis);
 			stmt.setDouble(3, bestand);
+			stmt.setBoolean(3, archiviert);
 			stmt.setString(4, produktNummer);
 
 			int rowsAffected = stmt.executeUpdate();

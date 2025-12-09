@@ -5,12 +5,14 @@ public class Produkt {
 	private String bezeichnung;
 	private double verkaufspreis;
 	private double bestand;
+	private boolean archiviert;
 
-	public Produkt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand) {
+	public Produkt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand, boolean archiviert) {
 		this.produktNummer = produktNummer;
 		this.bezeichnung = bezeichnung;
 		this.verkaufspreis = verkaufspreis;
 		this.bestand = bestand;
+		this.archiviert = archiviert;
 	}
 
 	public String getProduktNummer() {
@@ -28,6 +30,10 @@ public class Produkt {
 	public double getBestand() {
 		return bestand;
 	}
+
+	public boolean getArchiviert() {
+                return archiviert;
+        }
 
 	public String getProduktAsString() {
 		String produkt = getBezeichnung();

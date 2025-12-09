@@ -5,7 +5,7 @@ const buchungen = [];
 function berechneGesamtbetrag() {
     return buchungen.reduce(
         (summe, pos) => summe + pos.menge * pos.produkt.verkaufspreis,
-        0
+        0,
     );
 }
 
@@ -97,7 +97,9 @@ document.getElementById("abschicken").addEventListener("click", async () => {
         return;
     }
 
-    const einkaufsNrRes = await fetch(`${API_BASE_URL}/einkaeufe/naechste-einkaufsnr`);
+    const einkaufsNrRes = await fetch(
+        `${API_BASE_URL}/einkaeufe/naechste-einkaufsnr`,
+    );
     if (!einkaufsNrRes.ok) {
         alert("Fehler beim Abrufen der Einkaufsnummer!");
         return;

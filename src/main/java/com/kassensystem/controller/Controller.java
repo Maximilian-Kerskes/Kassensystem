@@ -50,13 +50,13 @@ public class Controller {
 		return ResponseEntity.ok("Produkt aktualisiert");
 	}
 
-	@DeleteMapping("/produkte/{id}")
-	public ResponseEntity<String> deleteProduktById(@PathVariable String id) {
+	@PutMapping("/produkte/{id}/archivieren")
+	public ResponseEntity<String> archiveProduktById(@PathVariable String id, @RequestBody boolean archiviert) {
 		Produkt existierendesProdukt = dieSteuerung.getProdukt(id);
 		if (existierendesProdukt == null) {
 			return ResponseEntity.notFound().build();
 		}
-		dieSteuerung.deleteProdukt(id);
+		dieSteuerung.archiveProduktById(id, archiviert);
 		return ResponseEntity.ok("Produkt gelöscht");
 	}
 

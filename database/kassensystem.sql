@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `produkt` (
   `bezeichnung` varchar(100) NOT NULL DEFAULT '0',
   `verkaufspreis` double NOT NULL DEFAULT 0,
   `bestand` double DEFAULT NULL,
+  `archiviert` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`produktnr`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

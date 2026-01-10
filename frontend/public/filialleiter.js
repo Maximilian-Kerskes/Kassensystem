@@ -194,6 +194,55 @@ async function downloadBestandsliste() {
     }
 }
 
+function downloadUmsatzliste() {
+    document.getElementById('dateModal').style.display = 'block';
+}
+
+async function submitUmsatzDownload() {
+    const startDate = document.getElementById('modalStartDate').value;
+    const endDate = document.getElementById('modalEndDate').value;
+
+    if (!startDate || !endDate) {
+        alert("Bitte Start- und Enddatum auswählen!");
+        return;
+    }
+
+    if (new Date(startDate) > new Date(endDate)) {
+        alert("Startdatum darf nicht nach Enddatum liegen!");
+        return;
+    }
+
+    closeModal();
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/umsatz/csv?startDate=${startDate}&endDate=${endDate}`);
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `umsatz_${startDate}_bis_${endDate}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } else {
+            alert("Fehler beim Herunterladen der Umsatzliste: " + response.status + " " + response.statusText);
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Netzwerkfehler: " + err.message);
+    }
+}
+
+function closeModal() {
+    document.getElementById('dateModal').style.display = 'none';
+    // Reset inputs
+    document.getElementById('modalStartDate').value = '';
+    document.getElementById('modalEndDate').value = '';
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     ladeTabelle("produkte");
 });

@@ -51,6 +51,8 @@ CREATE TABLE IF NOT EXISTS `produkt` (
   PRIMARY KEY (`produktnr`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+ALTER TABLE `produkt` ADD COLUMN IF NOT EXISTS `archiviert` tinyint(1) NOT NULL DEFAULT 0;
+
 -- Exportiere Daten aus Tabelle kassensystem.produkt: ~4 rows (ungefähr)
 DELETE FROM `produkt`;
 INSERT INTO `produkt` (`produktnr`, `bezeichnung`, `verkaufspreis`, `bestand`) VALUES

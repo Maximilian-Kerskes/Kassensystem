@@ -258,4 +258,26 @@ public class Datenbank implements AutoCloseable {
 		return 1;
 	}
 
+	public List<Object[]> fetchUmsatzData(String startDate, String endDate) throws SQLException {
+		String sqlStmt = "SELECT p.produktnr, p.bezeichnung, SUM(e.anzahl) as absatz, SUM(e.anzahl * p.verkaufspreis) as umsatz " +
+						 "FROM einkaeufe e JOIN produkt p ON e.produktnr = p.produktnr " +
+						 "WHERE e.timestamp BETWEEN ? AND ? " +
+						 "GROUP BY p.produktnr, p.bezeichnung " +
+						 "ORDER BY p.produktnr";
+
+		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
+			stmt.setString(1, startDate + " 00:00:00");
+			stmt.setString(2, endDate + " 23:59:59");
+			try (ResultSet rs = stmt.executeQuery()) {
+				List<Object[]> data = new ArrayList<>();
+				while (rs.next()) {
+					data.add(new Object[]{rs.getString(1), rs.getString(2), rs.getInt(3), rs.getDouble(4)});
+				}
+				return data;
+			}
+		} catch (SQLException e) {
+			throw new SQLException("Fehler beim Laden der Umsatzdaten: " + e.getMessage(), e);
+		}
+	}
+
 }

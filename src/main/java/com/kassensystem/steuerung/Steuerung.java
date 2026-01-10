@@ -196,4 +196,36 @@ public class Steuerung {
 			return "";
 		}
 	}
+
+	public String generateUmsatzCSV(String startDate, String endDate) {
+		try {
+			System.out.println("Generiere Umsatz CSV für " + startDate + " bis " + endDate);
+			List<Object[]> data = dieDatenbank.fetchUmsatzData(startDate, endDate);
+			System.out.println("Anzahl Datensätze: " + data.size());
+			StringBuilder csv = new StringBuilder();
+			csv.append("Produktnummer;Bezeichnung;Absatz;Umsatz\n");
+			double totalUmsatz = 0;
+			for (Object[] row : data) {
+				String produktnr = (String) row[0];
+				String bezeichnung = (String) row[1];
+				int absatz = (Integer) row[2];
+				double umsatz = (Double) row[3];
+				totalUmsatz += umsatz;
+				csv.append(produktnr)
+				   .append(";")
+				   .append(bezeichnung)
+				   .append(";")
+				   .append(absatz)
+				   .append(";")
+				   .append(String.format("%.2f", umsatz).replace(".", ","))
+				   .append("\n");
+			}
+			csv.append("GESAMT;;;" + String.format("%.2f", totalUmsatz).replace(".", ",") + "\n");
+			return csv.toString();
+		} catch (SQLException e) {
+			System.out.println("Fehler beim Generieren der Umsatzliste: " + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+	}
 }

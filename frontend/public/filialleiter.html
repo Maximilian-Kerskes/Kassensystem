@@ -9,9 +9,27 @@
 	<body>
 		<h1>Filialleiter</h1>
 
-		<button onclick="ladeTabelle('produkte')">Produkte</button>
-		<button onclick="ladeTabelle('einkaeufe')">Einkäufe</button>
-		<button onclick="downloadBestandsliste()">Bestandsliste herunterladen</button>
+		<div style="margin-bottom: 10px;">
+			<button onclick="ladeTabelle('produkte')">Produkte</button>
+			<button onclick="ladeTabelle('einkaeufe')">Einkäufe</button>
+		</div>
+		<div>
+			<button onclick="downloadBestandsliste()">Bestandsliste herunterladen</button>
+			<button onclick="downloadUmsatzliste()">Umsatzliste herunterladen</button>
+		</div>
+
+		<!-- Modal for date selection -->
+		<div id="dateModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+			<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
+				<h3>Umsatzliste Zeitraum auswählen</h3>
+				<label for="modalStartDate">Startdatum:</label>
+				<input type="date" id="modalStartDate" /><br><br>
+				<label for="modalEndDate">Enddatum:</label>
+				<input type="date" id="modalEndDate" /><br><br>
+				<button onclick="submitUmsatzDownload()">Herunterladen</button>
+				<button onclick="closeModal()">Abbrechen</button>
+			</div>
+		</div>
 
 		<table border="1" id="datenTable">
 			<thead>

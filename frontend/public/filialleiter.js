@@ -171,6 +171,29 @@ async function archiviereProdukt(produktNummer, archiviert) {
     }
 }
 
+async function downloadBestandsliste() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/bestandsliste/csv`);
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'bestandsliste.csv';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } else {
+            alert("Fehler beim Herunterladen der Bestandsliste");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Fehler beim Herunterladen der Bestandsliste");
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     ladeTabelle("produkte");
 });

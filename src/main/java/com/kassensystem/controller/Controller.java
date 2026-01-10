@@ -4,10 +4,17 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.kassensystem.fachkonzept.Produkt;
 import com.kassensystem.fachkonzept.Position;
+import com.kassensystem.fachkonzept.Produkt;
 import com.kassensystem.steuerung.Steuerung;
 
 @RestController
@@ -89,5 +96,14 @@ public class Controller {
 			return ResponseEntity.badRequest().body("Kasse konnte nicht geoeffnet werden");
 		}
 		return ResponseEntity.ok("Kasse geoeffnet");
+	}
+
+	@GetMapping("/bestandsliste/csv")
+	public ResponseEntity<String> getBestandslisteCSV() {
+		String csv = dieSteuerung.generateBestandslisteCSV();
+		return ResponseEntity.ok()
+				.header("Content-Type", "text/csv; charset=UTF-8")
+				.header("Content-Disposition", "attachment; filename=bestandsliste.csv")
+				.body(csv);
 	}
 }

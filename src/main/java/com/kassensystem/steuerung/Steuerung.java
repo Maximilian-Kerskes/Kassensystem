@@ -5,10 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.kassensystem.datenspeicherung.db.Datenbank;
-import com.kassensystem.fachkonzept.Produkt;
 import com.kassensystem.fachkonzept.Kasse;
 import com.kassensystem.fachkonzept.Position;
-
+import com.kassensystem.fachkonzept.Produkt;
 public class Steuerung {
 	private Datenbank dieDatenbank;
 	private int einkaufsnummer;
@@ -35,6 +34,7 @@ public class Steuerung {
 			System.out.println(e.getMessage());
 		}
 	}
+
 
 	public double rueckGeldEvent(String produktNummer, double bezahlterBetrag) {
 		try {
@@ -173,5 +173,27 @@ public class Steuerung {
 			System.out.println("Fehler beim erstellen der nächsten Einkaufsnummer: " + e.getMessage());
 		}
 		return -1;
+	}
+
+	public String generateBestandslisteCSV() {
+		try {
+			List<Produkt> produkte = dieDatenbank.fetchProdukte();
+			StringBuilder csv = new StringBuilder();
+			csv.append("Produktnummer;Bezeichnung;Verkaufspreis;Bestand\n");
+			for (Produkt p : produkte) {
+				csv.append(p.getProduktNummer())
+				   .append(";")
+				   .append(p.getBezeichnung())
+				   .append(";")
+				   .append(String.format("%.2f", p.getVerkaufspreis()).replace(".", ","))
+				   .append(";")
+				   .append(String.format("%.0f", p.getBestand()))
+				   .append("\n");
+			}
+			return csv.toString();
+		} catch (SQLException e) {
+			System.out.println("Fehler beim Generieren der Bestandsliste: " + e.getMessage());
+			return "";
+		}
 	}
 }

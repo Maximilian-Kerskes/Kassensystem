@@ -57,7 +57,7 @@ public class Datenbank implements AutoCloseable {
 	}
 
 	public List<Produkt> fetchProdukte() throws SQLException {
-		String sqlStmt = "SELECT * FROM produkt";
+		String sqlStmt = "SELECT * FROM produkt WHERE archiviert = 0";
 
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt);
 				ResultSet rs = stmt.executeQuery()) {
@@ -123,8 +123,8 @@ public class Datenbank implements AutoCloseable {
 			stmt.setString(1, bezeichnung);
 			stmt.setDouble(2, verkaufspreis);
 			stmt.setDouble(3, bestand);
-			stmt.setBoolean(3, archiviert);
-			stmt.setString(4, produktNummer);
+			stmt.setBoolean(4, archiviert);
+			stmt.setString(5, produktNummer);
 
 			int rowsAffected = stmt.executeUpdate();
 			if (rowsAffected == 0) {
@@ -137,12 +137,13 @@ public class Datenbank implements AutoCloseable {
 
 	public void createProdukt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand)
 			throws SQLException {
-		String sqlStmt = "INSERT INTO produkt (produktnr, bezeichnung, verkaufspreis, bestand) VALUES (?, ?, ?, ?)";
+		String sqlStmt = "INSERT INTO produkt (produktnr, bezeichnung, verkaufspreis, bestand, archiviert) VALUES (?, ?, ?, ?, ?)";
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
 			stmt.setString(1, produktNummer);
 			stmt.setString(2, bezeichnung);
 			stmt.setDouble(3, verkaufspreis);
 			stmt.setDouble(4, bestand);
+			stmt.setBoolean(5, false);
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {

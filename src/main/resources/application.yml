@@ -8,6 +8,14 @@ server:
 spring:
   application:
     name: kassensystem
+  datasource:
+    url: jdbc:h2:mem:kassensystem;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
 
 logging:
   level:
@@ -15,4 +23,3 @@ logging:
     org.springframework.web: DEBUG  # See web requests in the console
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
-

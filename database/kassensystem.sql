@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `produkt` (
   `produktnr` varchar(100) NOT NULL DEFAULT '0',
   `bezeichnung` varchar(100) NOT NULL DEFAULT '0',
   `verkaufspreis` double NOT NULL DEFAULT 0,
+  `steuersatz` ENUM ('REDUZIERT_7', 'REGULAER_19') NOT NULL DEFAULT 'REGULAER_19',
   `bestand` double DEFAULT NULL,
   `archiviert` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`produktnr`)
@@ -58,6 +59,16 @@ INSERT INTO `produkt` (`produktnr`, `bezeichnung`, `verkaufspreis`, `bestand`) V
 	('1', 'test_produkt', 2, 69),
 	('4030500021799', 'Gauloises Blau Zigaretten', 10, 70),
 	('4311596490363', 'Booster Exotic Energy Drink', 0.79, 60);
+
+CREATE TABLE IF NOT EXISTS `produkt_log` (
+    `lognr` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `produktnr` VARCHAR(50) NOT NULL,
+    `veraendert` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `feldname` VARCHAR(50) NOT NULL,
+    `alterwert` VARCHAR(255),
+    `neuerwert` VARCHAR(255)
+);
+
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

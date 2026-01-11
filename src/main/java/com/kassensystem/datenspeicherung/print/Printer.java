@@ -27,9 +27,7 @@ public class Printer {
 			}
 			job.setPageable(new PDFPageable(document));
 
-			if (job.printDialog()) {
-				job.print();
-			}
+			job.print();
 		} catch (PrinterException e) {
 			throw new PrinterException("");
 		}

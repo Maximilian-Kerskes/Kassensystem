@@ -1,6 +1,7 @@
 const API_BASE_URL = "http://localhost:8080/api";
 const tbody = document.querySelector("#buchungenTabelle tbody");
 const buchungen = [];
+const positionen = [];
 
 function berechneGesamtbetrag() {
     return buchungen.reduce(
@@ -13,6 +14,21 @@ async function oeffneKasse() {
     const res = await fetch(`${API_BASE_URL}/kasse`);
     if (!res.ok) {
         alert("Fehler beim Öffnen der Kasse");
+    }
+}
+
+async function druckeBon(positionenArray) {
+    const gegebenerBetrag = document.getElementById("gegeben").value.trim();
+    const response = await fetch(
+        `${API_BASE_URL}/bon?gegebenesGeld=${gegebenerBetrag}`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(positionenArray),
+        },
+    );
+    if (!response.ok) {
+        alert("Fehler beim Erstellen des Bons");
     }
 }
 
@@ -125,6 +141,14 @@ document.getElementById("abschicken").addEventListener("click", async () => {
         }
     }
 
+    const positionenArray = buchungen.map((pos) => ({
+        einkaufsnummer: einkaufsnummer,
+        produktnummer: pos.produkt.produktNummer,
+        menge: pos.menge,
+        zeitpunkt: pos.zeitpunkt,
+    }));
+
+    await druckeBon(positionenArray);
     buchungen.length = 0;
     renderBuchungen();
     await oeffneKasse();

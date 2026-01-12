@@ -1,5 +1,6 @@
 package com.kassensystem.controller;
 
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class Controller {
 		if (existierendesProdukt == null) {
 			return ResponseEntity.notFound().build();
 		}
+		dieSteuerung.logProdukt(existierendesProdukt, produkt);
 		dieSteuerung.updateProdukt(produkt);
 		return ResponseEntity.ok("Produkt aktualisiert");
 	}
@@ -98,9 +100,29 @@ public class Controller {
 		return ResponseEntity.ok("Kasse geoeffnet");
 	}
 
+	@PostMapping("/bon")
+	public ResponseEntity<String> bonDrucken(@RequestBody List<Position> positionen,
+			@RequestParam double gegebenesGeld) {
+		try {
+			dieSteuerung.bonDrucken(positionen, gegebenesGeld);
+		} catch (PrinterException e) {
+			return ResponseEntity.badRequest().body("Bon konnte nicht gedruckt werden");
+		}
+		return ResponseEntity.ok("Kasse geoeffnet");
+	}
+
 	@GetMapping("/bestandsliste/csv")
 	public ResponseEntity<String> getBestandslisteCSV() {
 		String csv = dieSteuerung.generateBestandslisteCSV();
+		return ResponseEntity.ok()
+				.header("Content-Type", "text/csv; charset=UTF-8")
+				.header("Content-Disposition", "attachment; filename=bestandsliste.csv")
+				.body(csv);
+	}
+
+	@GetMapping("/produktlog/csv")
+	public ResponseEntity<String> getProduktLogCSV() {
+		String csv = dieSteuerung.generateProduktLogCSV();
 		return ResponseEntity.ok()
 				.header("Content-Type", "text/csv; charset=UTF-8")
 				.header("Content-Disposition", "attachment; filename=bestandsliste.csv")
@@ -114,7 +136,8 @@ public class Controller {
 		String csv = dieSteuerung.generateUmsatzCSV(startDate, endDate);
 		return ResponseEntity.ok()
 				.header("Content-Type", "text/csv; charset=UTF-8")
-				.header("Content-Disposition", "attachment; filename=umsatz_" + startDate + "_bis_" + endDate + ".csv")
+				.header("Content-Disposition",
+						"attachment; filename=umsatz_" + startDate + "_bis_" + endDate + ".csv")
 				.body(csv);
 	}
 }

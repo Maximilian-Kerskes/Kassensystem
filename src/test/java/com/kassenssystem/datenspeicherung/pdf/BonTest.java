@@ -3,27 +3,32 @@ package com.kassenssystem.datenspeicherung.pdf;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import java.util.List;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 
+import com.kassensystem.datenspeicherung.db.Datenbank;
 import com.kassensystem.datenspeicherung.pdf.Bon;
+import com.kassensystem.fachkonzept.Position;
 import com.kassensystem.fachkonzept.Produkt;
+import com.kassensystem.fachkonzept.Steuersatz;
 
 public class BonTest {
-	private Produkt[] getMockProdukte() {
-		Produkt p1 = new Produkt("1", "Apfel", 0.99, 10, false);
-		Produkt p2 = new Produkt("2", "Brot", 1.50, 5, false);
-		Produkt p3 = new Produkt("3", "Milch", 0.80, 8, false);
-		return new Produkt[] { p1, p2, p3 };
+	private List<Position> getMockPositionen() {
+		List<Position> positionen = new java.util.ArrayList<>();
+		positionen.add(new Position(0, "0", new java.sql.Timestamp(System.currentTimeMillis()), 5));
+		positionen.add(new Position(1, "1", new java.sql.Timestamp(System.currentTimeMillis()), 1));
+		return positionen;
 	}
 
 	@Test
 	public void printBonTest() {
 		assertDoesNotThrow(() -> {
-			Bon derBon = new Bon();
-			Produkt[] produkte = getMockProdukte();
-			PDDocument bon = derBon.createBon(produkte);
+			Datenbank db = new Datenbank();
+			Bon derBon = new Bon(db);
+			List<Position> positionen = getMockPositionen();
+			PDDocument bon = derBon.createBon(positionen, 10.50);
 		});
 	}
 
 }
-

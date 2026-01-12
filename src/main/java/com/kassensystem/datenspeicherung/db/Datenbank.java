@@ -9,8 +9,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kassensystem.fachkonzept.Bestandsveraenderung;
 import com.kassensystem.fachkonzept.Position;
 import com.kassensystem.fachkonzept.Produkt;
+import com.kassensystem.fachkonzept.Steuersatz;
 
 // consider refactoring into try-with-resources? 
 public class Datenbank implements AutoCloseable {
@@ -46,7 +48,8 @@ public class Datenbank implements AutoCloseable {
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 					return new Produkt(rs.getString(1), rs.getString(2), rs.getDouble(3),
-							rs.getDouble(4), rs.getBoolean(5));
+							Steuersatz.fromString(rs.getString(4)), rs.getDouble(5),
+							rs.getBoolean(6));
 				} else {
 					return null;
 				}
@@ -69,8 +72,9 @@ public class Datenbank implements AutoCloseable {
 						rs.getString(1),
 						rs.getString(2),
 						rs.getDouble(3),
-						rs.getDouble(4),
-						rs.getBoolean(5)));
+						Steuersatz.fromString(rs.getString(4)),
+						rs.getDouble(5),
+						rs.getBoolean(6)));
 			}
 
 			return produkte;
@@ -98,6 +102,44 @@ public class Datenbank implements AutoCloseable {
 			return einkaeufe;
 		} catch (SQLException e) {
 			throw new SQLException("Fehler beim Laden der Einkäufe: " + e.getMessage(), e);
+		}
+	}
+
+	public List<Bestandsveraenderung> fetchBestandsveraenderungen() throws SQLException {
+		String sqlStmt = "SELECT * FROM produkt_log";
+
+		try (PreparedStatement stmt = con.prepareStatement(sqlStmt);
+				ResultSet rs = stmt.executeQuery()) {
+
+			List<Bestandsveraenderung> bestandsveraenderungen = new ArrayList<>();
+
+			while (rs.next()) {
+				bestandsveraenderungen.add(new Bestandsveraenderung(
+						rs.getInt(1),
+						rs.getString(2),
+						rs.getTimestamp(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6)));
+			}
+
+			return bestandsveraenderungen;
+		} catch (SQLException e) {
+			throw new SQLException("Fehler beim Laden der Einkäufe: " + e.getMessage(), e);
+		}
+	}
+
+	public void logProduktVeraenderung(String produktnr, String feldname, String alterwert, String neuerwert)
+			throws SQLException {
+		String sql = "INSERT INTO produkt_log"
+				+ "(produktnr, feldname, alterwert, neuerwert) "
+				+ "VALUES (?, ?, ?, ?)";
+		try (PreparedStatement stmt = con.prepareStatement(sql)) {
+			stmt.setString(1, produktnr);
+			stmt.setString(2, feldname);
+			stmt.setString(3, alterwert);
+			stmt.setString(4, neuerwert);
+			stmt.executeUpdate();
 		}
 	}
 
@@ -259,11 +301,12 @@ public class Datenbank implements AutoCloseable {
 	}
 
 	public List<Object[]> fetchUmsatzData(String startDate, String endDate) throws SQLException {
-		String sqlStmt = "SELECT p.produktnr, p.bezeichnung, SUM(e.anzahl) as absatz, SUM(e.anzahl * p.verkaufspreis) as umsatz " +
-						 "FROM einkaeufe e JOIN produkt p ON e.produktnr = p.produktnr " +
-						 "WHERE e.timestamp BETWEEN ? AND ? " +
-						 "GROUP BY p.produktnr, p.bezeichnung " +
-						 "ORDER BY p.produktnr";
+		String sqlStmt = "SELECT p.produktnr, p.bezeichnung, SUM(e.anzahl) as absatz, SUM(e.anzahl * p.verkaufspreis) as umsatz "
+				+
+				"FROM einkaeufe e JOIN produkt p ON e.produktnr = p.produktnr " +
+				"WHERE e.timestamp BETWEEN ? AND ? " +
+				"GROUP BY p.produktnr, p.bezeichnung " +
+				"ORDER BY p.produktnr";
 
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
 			stmt.setString(1, startDate + " 00:00:00");
@@ -271,7 +314,8 @@ public class Datenbank implements AutoCloseable {
 			try (ResultSet rs = stmt.executeQuery()) {
 				List<Object[]> data = new ArrayList<>();
 				while (rs.next()) {
-					data.add(new Object[]{rs.getString(1), rs.getString(2), rs.getInt(3), rs.getDouble(4)});
+					data.add(new Object[] { rs.getString(1), rs.getString(2), rs.getInt(3),
+							rs.getDouble(4) });
 				}
 				return data;
 			}

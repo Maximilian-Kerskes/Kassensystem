@@ -4,11 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import com.kassensystem.fachkonzept.Produkt;
+import com.kassensystem.fachkonzept.Steuersatz;
 
 public class ProduktTest {
 	@Test
-	public void constructorTest(){
-		Produkt produktTest = new Produkt("1", "Test", 5, 9, false);
+	public void constructorTest() {
+		Produkt produktTest = new Produkt("1", "Test", 5, Steuersatz.REGULAER_19, 9, false);
 		assertEquals("1", produktTest.getProduktNummer());
 		assertEquals("Test", produktTest.getBezeichnung());
 		assertEquals(5, produktTest.getVerkaufspreis());

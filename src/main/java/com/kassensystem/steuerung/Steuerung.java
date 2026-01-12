@@ -1,13 +1,20 @@
 package com.kassensystem.steuerung;
 
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+
 import com.kassensystem.datenspeicherung.db.Datenbank;
+import com.kassensystem.datenspeicherung.pdf.Bon;
+import com.kassensystem.datenspeicherung.print.Printer;
+import com.kassensystem.fachkonzept.Bestandsveraenderung;
 import com.kassensystem.fachkonzept.Kasse;
 import com.kassensystem.fachkonzept.Position;
 import com.kassensystem.fachkonzept.Produkt;
+
 public class Steuerung {
 	private Datenbank dieDatenbank;
 	private int einkaufsnummer;
@@ -35,7 +42,6 @@ public class Steuerung {
 		}
 	}
 
-
 	public double rueckGeldEvent(String produktNummer, double bezahlterBetrag) {
 		try {
 			Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
@@ -49,6 +55,13 @@ public class Steuerung {
 	public void kasseOeffnen() throws IOException {
 		Kasse dieKasse = new Kasse();
 		dieKasse.openKasse();
+	}
+
+	public void bonDrucken(List<Position> positionen, double gegebenesGeld) throws PrinterException {
+			Bon derBon = new Bon(dieDatenbank);
+			PDDocument bon = derBon.createBon(positionen, gegebenesGeld);
+			Printer derPrinter = new Printer();
+			derPrinter.printDocument(bon);
 	}
 
 	private double rueckgeldBerechnen(double bezahlterBetrag, double verkaufspreis) {
@@ -78,6 +91,37 @@ public class Steuerung {
 	public void deletePosition(Produkt pProdukt, int produkt) {
 		try {
 			dieDatenbank.deletePosition(pProdukt, einkaufsnummer);
+		} catch (SQLException e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+	}
+
+	public void logProdukt(Produkt existierendesProdukt, Produkt neuesProdukt) {
+		try {
+			if (!existierendesProdukt.getBezeichnung().equals(neuesProdukt.getBezeichnung())) {
+				dieDatenbank.logProduktVeraenderung(existierendesProdukt.getProduktNummer(),
+						"Bezeichnung",
+						existierendesProdukt.getBezeichnung(), neuesProdukt.getBezeichnung());
+			}
+			if (existierendesProdukt.getVerkaufspreis() != neuesProdukt.getVerkaufspreis()) {
+				dieDatenbank.logProduktVeraenderung(existierendesProdukt.getProduktNummer(),
+						"Verkaufspreis",
+						String.valueOf(existierendesProdukt.getVerkaufspreis()),
+						String.valueOf(neuesProdukt.getVerkaufspreis()));
+			}
+			if (existierendesProdukt.getBestand() != neuesProdukt.getBestand()) {
+				dieDatenbank.logProduktVeraenderung(existierendesProdukt.getProduktNummer(),
+						"Bestand",
+						String.valueOf(existierendesProdukt.getBestand()),
+						String.valueOf(neuesProdukt.getBestand()));
+			}
+			if (existierendesProdukt.getArchiviert() != neuesProdukt.getArchiviert()) {
+				dieDatenbank.logProduktVeraenderung(existierendesProdukt.getProduktNummer(),
+						"Archiviert",
+						String.valueOf(existierendesProdukt.getArchiviert()),
+						String.valueOf(neuesProdukt.getArchiviert()));
+			}
+
 		} catch (SQLException e) {
 			System.out.println(e.getLocalizedMessage());
 		}
@@ -182,17 +226,43 @@ public class Steuerung {
 			csv.append("Produktnummer;Bezeichnung;Verkaufspreis;Bestand\n");
 			for (Produkt p : produkte) {
 				csv.append(p.getProduktNummer())
-				   .append(";")
-				   .append(p.getBezeichnung())
-				   .append(";")
-				   .append(String.format("%.2f", p.getVerkaufspreis()).replace(".", ","))
-				   .append(";")
-				   .append(String.format("%.0f", p.getBestand()))
-				   .append("\n");
+						.append(";")
+						.append(p.getBezeichnung())
+						.append(";")
+						.append(String.format("%.2f", p.getVerkaufspreis()).replace(".", ","))
+						.append(";")
+						.append(String.format("%.0f", p.getBestand()))
+						.append("\n");
 			}
 			return csv.toString();
 		} catch (SQLException e) {
 			System.out.println("Fehler beim Generieren der Bestandsliste: " + e.getMessage());
+			return "";
+		}
+	}
+
+	public String generateProduktLogCSV() {
+		try {
+			List<Bestandsveraenderung> bestandsveraenderungen = dieDatenbank.fetchBestandsveraenderungen();
+			StringBuilder csv = new StringBuilder();
+			csv.append("LogNummer;ProduktNummer;Veraendert;Feldname;Alterwert;Neuerwert\n");
+			for (Bestandsveraenderung b : bestandsveraenderungen) {
+				csv.append(b.getLognr())
+						.append(";")
+						.append(b.getProduktnr())
+						.append(";")
+						.append(b.getVeraendert())
+						.append(";")
+						.append(b.getFeldname())
+						.append(";")
+						.append(b.getAlterwert())
+						.append(";")
+						.append(b.getNeuerwert())
+						.append("\n");
+			}
+			return csv.toString();
+		} catch (SQLException e) {
+			System.out.println("Fehler beim Generieren des Bestandsveraenderungslogs: " + e.getMessage());
 			return "";
 		}
 	}
@@ -212,13 +282,13 @@ public class Steuerung {
 				double umsatz = (Double) row[3];
 				totalUmsatz += umsatz;
 				csv.append(produktnr)
-				   .append(";")
-				   .append(bezeichnung)
-				   .append(";")
-				   .append(absatz)
-				   .append(";")
-				   .append(String.format("%.2f", umsatz).replace(".", ","))
-				   .append("\n");
+						.append(";")
+						.append(bezeichnung)
+						.append(";")
+						.append(absatz)
+						.append(";")
+						.append(String.format("%.2f", umsatz).replace(".", ","))
+						.append("\n");
 			}
 			csv.append("GESAMT;;;" + String.format("%.2f", totalUmsatz).replace(".", ",") + "\n");
 			return csv.toString();

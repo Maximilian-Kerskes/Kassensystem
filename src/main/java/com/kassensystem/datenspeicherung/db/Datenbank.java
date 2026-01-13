@@ -60,7 +60,7 @@ public class Datenbank implements AutoCloseable {
 	}
 
 	public List<Produkt> fetchProdukte() throws SQLException {
-		String sqlStmt = "SELECT * FROM produkt WHERE archiviert = 0";
+		String sqlStmt = "SELECT * FROM produkt";
 
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt);
 				ResultSet rs = stmt.executeQuery()) {

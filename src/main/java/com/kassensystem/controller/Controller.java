@@ -140,4 +140,17 @@ public class Controller {
 						"attachment; filename=umsatz_" + startDate + "_bis_" + endDate + ".csv")
 				.body(csv);
 	}
+
+	@PostMapping("/rueckgeld")
+	public ResponseEntity<Double> rueckgeldBerechnen(
+			@RequestParam double bezahlterBetrag,
+			@RequestParam double verkaufspreis) {
+
+		if (bezahlterBetrag < 0 || verkaufspreis < 0) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		double rueckgeld = dieSteuerung.rueckgeldBerechnen(bezahlterBetrag, verkaufspreis);
+		return ResponseEntity.ok(rueckgeld);
+	}
 }

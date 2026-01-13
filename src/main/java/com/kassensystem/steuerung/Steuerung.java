@@ -42,15 +42,6 @@ public class Steuerung {
 		}
 	}
 
-	public double rueckGeldEvent(String produktNummer, double bezahlterBetrag) {
-		try {
-			Produkt dasProdukt = dieDatenbank.fetchProdukt(produktNummer);
-			return rueckgeldBerechnen(bezahlterBetrag, dasProdukt.getVerkaufspreis());
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			return 0;
-		}
-	}
 
 	public void kasseOeffnen() throws IOException {
 		Kasse dieKasse = new Kasse();
@@ -64,7 +55,7 @@ public class Steuerung {
 			derPrinter.printDocument(bon);
 	}
 
-	private double rueckgeldBerechnen(double bezahlterBetrag, double verkaufspreis) {
+	public double rueckgeldBerechnen(double bezahlterBetrag, double verkaufspreis) {
 		return Math.abs(verkaufspreis - bezahlterBetrag);
 	}
 

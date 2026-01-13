@@ -94,19 +94,6 @@ public class SteuerungTest {
 		});
 	}
 
-	// TODO
-	// use mockdb instead of real, this WILL break if the DB changes
-	@Test
-	public void rueckGeldEventTest() {
-		assertDoesNotThrow(() -> {
-			Steuerung dieSteuerung = new Steuerung();
-			double rueckGeld = dieSteuerung.rueckGeldEvent("1", 1);
-			assertEquals(14, rueckGeld);
-
-			rueckGeld = dieSteuerung.rueckGeldEvent("1", 5);
-			assertEquals(10, rueckGeld);
-		});
-	}
 
 	// TODO
 	// use mockdb instead of real, this WILL break if the DB changes

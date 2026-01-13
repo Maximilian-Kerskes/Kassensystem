@@ -19,6 +19,7 @@ async function oeffneKasse() {
 
 async function druckeBon(positionenArray) {
     const gegebenerBetrag = document.getElementById("gegeben").value.trim();
+
     const response = await fetch(
         `${API_BASE_URL}/bon?gegebenesGeld=${gegebenerBetrag}`,
         {
@@ -27,22 +28,37 @@ async function druckeBon(positionenArray) {
             body: JSON.stringify(positionenArray),
         },
     );
+
     if (!response.ok) {
         alert("Fehler beim Erstellen des Bons");
     }
 }
 
+async function berechneRueckgeld(bezahlt, gesamtbetrag) {
+    const res = await fetch(
+        `${API_BASE_URL}/rueckgeld?bezahlterBetrag=${bezahlt}&verkaufspreis=${gesamtbetrag}`,
+        { method: "POST" },
+    );
+
+    if (!res.ok) {
+        throw new Error("Rückgeld konnte nicht berechnet werden");
+    }
+
+    return await res.json();
+}
+
 function renderBuchungen() {
     tbody.innerHTML = "";
+
     buchungen.forEach((pos, index) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${pos.produkt.produktNummer}</td>
-            <td>${pos.produkt.bezeichnung}</td>
-            <td>${pos.menge}</td>
-            <td>${new Date(pos.zeitpunkt).toLocaleString()}</td>
-            <td><button data-index="${index}">Löschen</button></td>
-        `;
+			<td>${pos.produkt.produktNummer}</td>
+			<td>${pos.produkt.bezeichnung}</td>
+			<td>${pos.menge}</td>
+			<td>${new Date(pos.zeitpunkt).toLocaleString()}</td>
+			<td><button data-index="${index}">Löschen</button></td>
+		`;
         tbody.appendChild(tr);
     });
 
@@ -62,8 +78,8 @@ async function bucheProdukt() {
     const produktNr = document.getElementById("produkt").value.trim();
     const menge = parseInt(document.getElementById("menge").value);
 
-    if (!produktNr || !menge) {
-        alert("Bitte Produktnummer und Menge eingeben");
+    if (!produktNr || !menge || menge <= 0) {
+        alert("Bitte Produktnummer und gültige Menge eingeben");
         return;
     }
 
@@ -116,6 +132,7 @@ document.getElementById("abschicken").addEventListener("click", async () => {
     const einkaufsNrRes = await fetch(
         `${API_BASE_URL}/einkaeufe/naechste-einkaufsnr`,
     );
+
     if (!einkaufsNrRes.ok) {
         alert("Fehler beim Abrufen der Einkaufsnummer!");
         return;
@@ -148,10 +165,34 @@ document.getElementById("abschicken").addEventListener("click", async () => {
         zeitpunkt: pos.zeitpunkt,
     }));
 
+    const gegebenerBetrag = parseFloat(
+        document.getElementById("gegeben").value,
+    );
+
+    if (isNaN(gegebenerBetrag) || gegebenerBetrag < 0) {
+        alert("Bitte gültigen Geldbetrag eingeben");
+        return;
+    }
+
+    const gesamtbetrag = berechneGesamtbetrag();
+
+    let rueckgeld;
+    try {
+        rueckgeld = await berechneRueckgeld(gegebenerBetrag, gesamtbetrag);
+    } catch (e) {
+        alert(e.message);
+        return;
+    }
+
     await druckeBon(positionenArray);
     buchungen.length = 0;
     renderBuchungen();
     await oeffneKasse();
 
-    alert(`Alle Buchungen für Einkaufsnummer ${einkaufsnummer} abgeschickt!`);
+    alert(
+        `Einkauf abgeschlossen!\n` +
+            `Gesamtbetrag: ${gesamtbetrag.toFixed(2)} €\n` +
+            `Gegeben: ${gegebenerBetrag.toFixed(2)} €\n` +
+            `Rückgeld: ${rueckgeld.toFixed(2)} €`,
+    );
 });

@@ -35,6 +35,10 @@ async function druckeBon(positionenArray) {
 }
 
 async function berechneRueckgeld(bezahlt, gesamtbetrag) {
+	if (bezahlt < gesamtbetrag) {
+        throw new Error("Zu wenig Geld gegeben");
+    }
+
     const res = await fetch(
         `${API_BASE_URL}/rueckgeld?bezahlterBetrag=${bezahlt}&verkaufspreis=${gesamtbetrag}`,
         { method: "POST" },

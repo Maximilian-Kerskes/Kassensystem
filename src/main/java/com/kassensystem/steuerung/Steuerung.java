@@ -56,7 +56,10 @@ public class Steuerung {
 	}
 
 	public double rueckgeldBerechnen(double bezahlterBetrag, double verkaufspreis) {
-		return Math.abs(verkaufspreis - bezahlterBetrag);
+		if (bezahlterBetrag < verkaufspreis) {
+			throw new IllegalArgumentException("Gezahlter Betrag ist zu niedrig");
+		}
+		return bezahlterBetrag - verkaufspreis;
 	}
 
 	public void scannedProdukt(Produkt pProdukt) {

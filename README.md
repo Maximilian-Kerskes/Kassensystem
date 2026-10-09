@@ -2,11 +2,8 @@
 
 ## Quickstart
 ```bash
+./dependencies-start.sh
+mvn clean package
 mvn spring-boot:run
 ```
 
-## Quickstart Frontend
-```bash
-npm install
-npm start
-```

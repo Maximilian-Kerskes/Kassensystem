@@ -4,18 +4,21 @@ import com.fazecast.jSerialComm.*;
 import java.io.IOException;
 
 public class Kasse {
-	private String kassenName;
+	private static final String KASSEN_NAME = "USB-Serial Controller";
 	private SerialPort serialPort;
 
 	public Kasse() throws IOException {
-		kassenName = "USB-Serial Controller";
-		serialPort = getSerialPort();
+		this(getSerialPort());
 	}
 
-	private SerialPort getSerialPort() throws IOException {
+	public Kasse(SerialPort serialPort) {
+		this.serialPort = serialPort;
+	}
+
+	private static SerialPort getSerialPort() throws IOException {
 		SerialPort[] serialPorts = SerialPort.getCommPorts();
 		for(SerialPort port : serialPorts) {
-			if(port.getPortDescription().equals(kassenName)){
+			if(port.getPortDescription().equals(KASSEN_NAME)){
 				return port;
 			}
 		}

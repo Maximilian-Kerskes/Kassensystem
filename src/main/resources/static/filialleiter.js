@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "/api";
 
 async function ladeTabelle(typ) {
     const response = await fetch(`${API_BASE_URL}/${typ}`);

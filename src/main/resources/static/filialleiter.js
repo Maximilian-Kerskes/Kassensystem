@@ -15,6 +15,7 @@ async function ladeTabelle(typ) {
             <th>Produktnr</th>
             <th>Bezeichnung</th>
             <th>Verkaufspreis</th>
+            <th>Steuersatz</th>
             <th>Bestand</th>
             <th>Aktion</th>
         `;
@@ -27,6 +28,7 @@ async function ladeTabelle(typ) {
                 <td style="text-decoration: line-through">${p.produktNummer}</td>
                 <td contenteditable="false" style="text-decoration: line-through">${p.bezeichnung}</td>
                 <td contenteditable="false" style="text-decoration: line-through">${p.verkaufspreis}</td>
+                <td contenteditable="false" style="text-decoration: line-through">${p.steuersatz}</td>
                 <td contenteditable="false" style="text-decoration: line-through">${p.bestand}</td>
                 <td>
                     <button onclick="archiviereProdukt(${p.produktNummer}, ${p.archiviert})">de-archivieren</button>
@@ -37,6 +39,12 @@ async function ladeTabelle(typ) {
                 <td>${p.produktNummer}</td>
                 <td contenteditable="true">${p.bezeichnung}</td>
                 <td contenteditable="true">${p.verkaufspreis}</td>
+                <td>
+                    <select>
+                        <option value="REGULAER_19" ${p.steuersatz === "REGULAER_19" ? "selected" : ""}>19 %</option>
+                        <option value="REDUZIERT_7" ${p.steuersatz === "REDUZIERT_7" ? "selected" : ""}>7 %</option>
+                    </select>
+                </td>
                 <td contenteditable="true">${p.bestand}</td>
                 <td>
                     <button onclick="speichereProdukt(this)">Speichern</button>
@@ -52,6 +60,12 @@ async function ladeTabelle(typ) {
             <td contenteditable="true"></td>
             <td contenteditable="true"></td>
             <td contenteditable="true"></td>
+            <td>
+                <select>
+                    <option value="REGULAER_19">19 %</option>
+                    <option value="REDUZIERT_7">7 %</option>
+                </select>
+            </td>
             <td contenteditable="true"></td>
             <td><button onclick="erstelleProdukt(this)">Hinzufügen</button></td>
         `;
@@ -82,7 +96,8 @@ async function speichereProdukt(button) {
     const produktNummer = tr.children[0].textContent; // ID
     const bezeichnung = tr.children[1].textContent;
     const verkaufspreis = tr.children[2].textContent;
-    const bestand = tr.children[3].textContent;
+    const steuersatz = tr.children[3].querySelector("select").value;
+    const bestand = tr.children[4].textContent;
 
     try {
         const response = await fetch(
@@ -91,10 +106,11 @@ async function speichereProdukt(button) {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    produktNummer,
                     bezeichnung,
                     verkaufspreis,
                     bestand,
+                    steuersatz,
+                    archiviert: false,
                 }),
             },
         );
@@ -115,7 +131,8 @@ async function erstelleProdukt(button) {
     const produktNummer = tr.children[0].textContent;
     const bezeichnung = tr.children[1].textContent;
     const verkaufspreis = tr.children[2].textContent;
-    const bestand = tr.children[3].textContent;
+    const steuersatz = tr.children[3].querySelector("select").value;
+    const bestand = tr.children[4].textContent;
 
     if (!produktNummer || !bezeichnung || !verkaufspreis || !bestand) {
         alert("Bitte alle Felder ausfüllen!");
@@ -131,6 +148,7 @@ async function erstelleProdukt(button) {
                 bezeichnung,
                 verkaufspreis,
                 bestand,
+                steuersatz,
             }),
         });
         if (response.ok) {
@@ -152,11 +170,11 @@ async function archiviereProdukt(produktNummer, archiviert) {
 
     try {
         const response = await fetch(
-            `${API_BASE_URL}/produkte/${produktNummer}/archivieren`,
+            `${API_BASE_URL}/produkte/${produktNummer}`,
             {
-                method: "PUT",
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(archiviert),
+                body: JSON.stringify({ archiviert }),
             },
         );
         if (response.ok) {

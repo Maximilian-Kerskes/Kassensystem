@@ -14,17 +14,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import com.kassensystem.fachkonzept.Position;
 import com.kassensystem.fachkonzept.Produkt;
 import com.kassensystem.steuerung.Steuerung;
+import com.kassensystem.fachkonzept.Produkt;
+
+import com.kassensystem.dto.bericht.UmsatzGetRequest;
 
 @RestController
 @RequestMapping("/api")
 public class BerichtController {
 	private final Steuerung dieSteuerung;
 
-	public BerichtController() {
-		dieSteuerung = new Steuerung();
+	public BerichtController(Steuerung dieSteuerung) {
+		this.dieSteuerung = dieSteuerung;
 	}
 
 	@GetMapping("/bestandsliste/csv")
@@ -47,13 +52,12 @@ public class BerichtController {
 
 	@GetMapping("/umsatz/csv")
 	public ResponseEntity<String> getUmsatzCSV(
-			@RequestParam String startDate,
-			@RequestParam String endDate) {
-		String csv = dieSteuerung.generateUmsatzCSV(startDate, endDate);
+			@Valid @RequestParam UmsatzGetRequest request) {
+		String csv = dieSteuerung.generateUmsatzCSV(request.startDate(), request.endDate());
 		return ResponseEntity.ok()
 				.header("Content-Type", "text/csv; charset=UTF-8")
 				.header("Content-Disposition",
-						"attachment; filename=umsatz_" + startDate + "_bis_" + endDate + ".csv")
+						"attachment; filename=umsatz_" + request.startDate() + "_bis_" + request.endDate() + ".csv")
 				.body(csv);
 	}
 }

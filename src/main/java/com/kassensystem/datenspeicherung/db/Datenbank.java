@@ -157,16 +157,17 @@ public class Datenbank implements AutoCloseable {
 		}
 	}
 
-	public void updateProdukt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand,
-			boolean archiviert)
+	public void updateProdukt(String produktNummer, String bezeichnung, double verkaufspreis,
+			Steuersatz steuersatz, double bestand, boolean archiviert)
 			throws SQLException {
-		String sqlStmt = "UPDATE produkt SET bezeichnung = ?, verkaufspreis = ?, bestand = ?, archiviert = ? WHERE produktnr = ?";
+		String sqlStmt = "UPDATE produkt SET bezeichnung = ?, verkaufspreis = ?, steuersatz = ?, bestand = ?, archiviert = ? WHERE produktnr = ?";
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
 			stmt.setString(1, bezeichnung);
 			stmt.setDouble(2, verkaufspreis);
-			stmt.setDouble(3, bestand);
-			stmt.setBoolean(4, archiviert);
-			stmt.setString(5, produktNummer);
+			stmt.setString(3, steuersatz.name());
+			stmt.setDouble(4, bestand);
+			stmt.setBoolean(5, archiviert);
+			stmt.setString(6, produktNummer);
 
 			int rowsAffected = stmt.executeUpdate();
 			if (rowsAffected == 0) {
@@ -177,15 +178,17 @@ public class Datenbank implements AutoCloseable {
 		}
 	}
 
-	public void createProdukt(String produktNummer, String bezeichnung, double verkaufspreis, double bestand)
+	public void createProdukt(String produktNummer, String bezeichnung, double verkaufspreis,
+			Steuersatz steuersatz, double bestand)
 			throws SQLException {
-		String sqlStmt = "INSERT INTO produkt (produktnr, bezeichnung, verkaufspreis, bestand, archiviert) VALUES (?, ?, ?, ?, ?)";
+		String sqlStmt = "INSERT INTO produkt (produktnr, bezeichnung, verkaufspreis, steuersatz, bestand, archiviert) VALUES (?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement stmt = con.prepareStatement(sqlStmt)) {
 			stmt.setString(1, produktNummer);
 			stmt.setString(2, bezeichnung);
 			stmt.setDouble(3, verkaufspreis);
-			stmt.setDouble(4, bestand);
-			stmt.setBoolean(5, false);
+			stmt.setString(4, steuersatz.name());
+			stmt.setDouble(5, bestand);
+			stmt.setBoolean(6, false);
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {

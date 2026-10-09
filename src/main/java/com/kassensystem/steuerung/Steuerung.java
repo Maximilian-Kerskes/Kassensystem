@@ -3,18 +3,23 @@ package com.kassensystem.steuerung;
 import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.springframework.stereotype.Service;
 
 import com.kassensystem.datenspeicherung.db.Datenbank;
 import com.kassensystem.datenspeicherung.pdf.Bon;
 import com.kassensystem.datenspeicherung.print.Printer;
+import com.kassensystem.dto.einkauf.EinkaufCreateRequest;
+import com.kassensystem.dto.einkauf.PositionRequest;
 import com.kassensystem.fachkonzept.Bestandsveraenderung;
 import com.kassensystem.fachkonzept.Kasse;
 import com.kassensystem.fachkonzept.Position;
 import com.kassensystem.fachkonzept.Produkt;
 
+@Service
 public class Steuerung {
 	private Datenbank dieDatenbank;
 	private int einkaufsnummer;
@@ -68,6 +73,7 @@ public class Steuerung {
 					pProdukt.getProduktNummer(),
 					pProdukt.getBezeichnung(),
 					pProdukt.getVerkaufspreis(),
+					pProdukt.getSteuersatz(),
 					pProdukt.getBestand());
 		} catch (SQLException e) {
 			System.out.println(e.getLocalizedMessage());
@@ -130,6 +136,23 @@ public class Steuerung {
 		}
 	}
 
+	public int createEinkauf(EinkaufCreateRequest request) {
+		int einkaufsnummer = naechsteEinkaufsnummer();
+
+		for (PositionRequest position : request.positionen()) {
+			Position neuePosition = new Position(
+				einkaufsnummer,
+				position.produktnummer(),
+				new Timestamp(System.currentTimeMillis()),
+				position.menge()
+			);
+
+			createPosition(neuePosition);
+		}
+
+		return einkaufsnummer;
+	}
+
 	public List<Produkt> getProdukte() {
 		try {
 			return dieDatenbank.fetchProdukte();
@@ -163,6 +186,7 @@ public class Steuerung {
 					produkt.getProduktNummer(),
 					produkt.getBezeichnung(),
 					produkt.getVerkaufspreis(),
+					produkt.getSteuersatz(),
 					produkt.getBestand());
 		} catch (SQLException e) {
 			System.out.println("Fehler beim Erstellen des Produkts: " + e.getMessage());
@@ -175,6 +199,7 @@ public class Steuerung {
 					produkt.getProduktNummer(),
 					produkt.getBezeichnung(),
 					produkt.getVerkaufspreis(),
+					produkt.getSteuersatz(),
 					produkt.getBestand(),
 					produkt.getArchiviert());
 		} catch (SQLException e) {

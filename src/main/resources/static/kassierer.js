@@ -11,7 +11,9 @@ function berechneGesamtbetrag() {
 }
 
 async function oeffneKasse() {
-    const res = await fetch(`${API_BASE_URL}/kasse`);
+    const res = await fetch(`${API_BASE_URL}/kasse/oeffnen`, {
+        method: "POST",
+    });
     if (!res.ok) {
         alert("Fehler beim Öffnen der Kasse");
     }
@@ -20,14 +22,14 @@ async function oeffneKasse() {
 async function druckeBon(positionenArray) {
     const gegebenerBetrag = document.getElementById("gegeben").value.trim();
 
-    const response = await fetch(
-        `${API_BASE_URL}/bon?gegebenesGeld=${gegebenerBetrag}`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(positionenArray),
-        },
-    );
+    const response = await fetch(`${API_BASE_URL}/bon`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            positionen: positionenArray,
+            gegebenesGeld: parseFloat(gegebenerBetrag),
+        }),
+    });
 
     if (!response.ok) {
         alert("Fehler beim Erstellen des Bons");
@@ -39,10 +41,14 @@ async function berechneRueckgeld(bezahlt, gesamtbetrag) {
         throw new Error("Zu wenig Geld gegeben");
     }
 
-    const res = await fetch(
-        `${API_BASE_URL}/rueckgeld?bezahlterBetrag=${bezahlt}&verkaufspreis=${gesamtbetrag}`,
-        { method: "POST" },
-    );
+    const res = await fetch(`${API_BASE_URL}/rueckgeld`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            bezahlterBetrag: bezahlt,
+            gesamtbetrag,
+        }),
+    });
 
     if (!res.ok) {
         throw new Error("Rückgeld konnte nicht berechnet werden");
@@ -133,34 +139,23 @@ document.getElementById("abschicken").addEventListener("click", async () => {
         return;
     }
 
-    const einkaufsNrRes = await fetch(
-        `${API_BASE_URL}/einkaeufe/naechste-einkaufsnr`,
-    );
+    const einkaufResponse = await fetch(`${API_BASE_URL}/einkaeufe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            positionen: buchungen.map((pos) => ({
+                produktnummer: pos.produkt.produktNummer,
+                menge: pos.menge,
+            })),
+        }),
+    });
 
-    if (!einkaufsNrRes.ok) {
-        alert("Fehler beim Abrufen der Einkaufsnummer!");
+    if (!einkaufResponse.ok) {
+        alert("Fehler beim Erstellen des Einkaufs!");
         return;
     }
 
-    const einkaufsnummer = await einkaufsNrRes.json();
-
-    for (const pos of buchungen) {
-        const response = await fetch(`${API_BASE_URL}/positionen`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                einkaufsnummer: einkaufsnummer,
-                produktnummer: pos.produkt.produktNummer,
-                menge: pos.menge,
-                zeitpunkt: pos.zeitpunkt,
-            }),
-        });
-
-        if (!response.ok) {
-            alert("Fehler beim Erstellen einer Position!");
-            return;
-        }
-    }
+    const einkaufsnummer = (await einkaufResponse.json()).einkaufsnummer;
 
     const positionenArray = buchungen.map((pos) => ({
         einkaufsnummer: einkaufsnummer,
